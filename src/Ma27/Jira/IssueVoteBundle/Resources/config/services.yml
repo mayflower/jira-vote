@@ -1,0 +1,36 @@
+services:
+    ma27_jira_issue_vote.client:
+        class: Ma27\Jira\IssueVoteBundle\Util\Client\Jira
+        arguments: [%host%]
+
+    ma27_jira_issue_vote.oauth_credential.url_generator:
+        class: Ma27\Jira\IssueVoteBundle\Util\Generator\OAuthUrlGenerator
+        arguments: [%host%, @router, %client%]
+
+    ma27_jira_issue_vote.oauth.factory:
+        class: Ma27\Jira\IssueVoteBundle\Util\OAuthPluginFactory
+        arguments: [%consumer_key%, %consumer_secret%]
+
+    ma27_jira_issue_vote.oauth.proxy:
+        class: Ma27\Jira\IssueVoteBundle\Util\OAuthSecurityProxy
+        arguments: [@session]
+
+    ma27_jira_issue_vote.oauth.provider:
+        class: Ma27\Jira\IssueVoteBundle\Util\OAuthSecurityAccessProvider
+        arguments: [@ma27_jira_issue_vote.client, @ma27_jira_issue_vote.oauth_credential.url_generator]
+
+    ma27_jira_issue_vote.oauth.adapter:
+        class: Ma27\Jira\IssueVoteBundle\Service\JiraPropertyAdapter
+        arguments: [@ma27_jira_issue_vote.oauth.provider]
+
+    ma27_jira_issue_vote.issue.manager:
+        class: Ma27\Jira\IssueVoteBundle\Service\IssueManager
+        arguments: [@ma27_jira_issue_vote.oauth.adapter]
+
+    ma27_jira_issue_vote.listener.jira_credentials:
+        class: Ma27\Jira\IssueVoteBundle\EventListener\JiraCredentialsListener
+        arguments: [@ma27_jira_issue_vote.oauth.proxy]
+        calls:
+            - [ setContainer, [@service_container] ]
+        tags:
+            - { name: kernel.event_subscriber }

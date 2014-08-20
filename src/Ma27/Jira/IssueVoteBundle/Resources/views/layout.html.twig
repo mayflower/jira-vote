@@ -1,0 +1,18 @@
+{% spaceless %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <title>{% block title %}{% endblock %} - Jira-Vote</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="user-scable=no, width=device-width, height=device-height, initial-scale=1" />
+        {% block styles %}
+            {% stylesheets '@Ma27JiraIssueVoteBundle/Resources/public/css/*' %}
+                <link rel="stylesheet" type="text/css" media="all" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+    </body>
+</html>
+{% endspaceless %}

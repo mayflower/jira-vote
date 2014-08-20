@@ -1,0 +1,5 @@
+ma27_jira_issue_vote:
+    resource: "@Ma27JiraIssueVoteBundle/Resources/config/routing.yml"
+    prefix:   /
+
+

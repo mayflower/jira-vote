@@ -1,0 +1,31 @@
+ma27_jira_issue_vote_homepage:
+    path: /
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Issue:index }
+
+ma27_jira_issue_vote_verify:
+    path: /unauthorized
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Authorize:index }
+
+ma27_jira_issue_vote_verify_callback:
+    path: /verifier/callback
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Authorize:callback }
+
+ma27_jira_issue_vote_select_filter:
+    path: /filter/select
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Issue:selectFilter }
+
+ma27_jira_issue_vote_voter:
+    path: /vote-issue/{issue_id}
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Issue:vote }
+
+ma27_jira_issue_vote_unvote:
+    path: /unvote-issue/{issue_id}
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Issue:unvote }
+
+ma27_jira_issue_vote_logout:
+    path: /logout
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Authorize:invalidateTokens }
+
+ma27_jira_issue_vote_settings:
+    path: /settings
+    defaults: { _controller: Ma27JiraIssueVoteBundle:Issue:settings }

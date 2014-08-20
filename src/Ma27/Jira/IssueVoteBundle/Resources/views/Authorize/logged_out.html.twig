@@ -1,0 +1,13 @@
+{% extends 'Ma27JiraIssueVoteBundle::layout.html.twig' %}
+{% block body %}
+<div class="container row" style="margin-top: 20px;">
+    <div class="col-md-8 col-md-offset-3">
+        <div class="alert alert-{{ type }}">
+            <p>
+                <span>{{ text|default('') }}You can login now <a href="{{ login_url }}">here</a></span>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block title %}Logged out yet{% endblock %}

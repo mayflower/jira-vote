@@ -1,0 +1,6 @@
+# Jira Issue Voter Configuration
+ma27_jira_issue_vote:
+    consumer_key: %jira_secret%
+    consumer_secret: %private_key%
+    oauth_host: https://jira.mayflower.de
+    client_host: http://jira-vote.dev

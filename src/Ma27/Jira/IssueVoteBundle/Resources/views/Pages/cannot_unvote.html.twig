@@ -1,0 +1,21 @@
+{% extends 'Ma27JiraIssueVoteBundle::layout.html.twig' %}
+{% block body %}
+    <div class="container row" style="margin-top: 20px;">
+        <div class="col-md-8 col-md-offset-3">
+            <div class="alert alert-danger">
+                <p>
+                    <span>
+                        <p>You can't unvote that issue! Please check out the following points:</p>
+                        <ul>
+                            <li>That the issue isn't resolved</li>
+                            <li>That you aren't the reporter of it</li>
+                            <li>That you have already voted the issue</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><a href="{{ url('ma27_jira_issue_vote_homepage') }}#{{ issue_id }}">Go Back</a></p>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block title %}Cannot unvote that issue{% endblock %}

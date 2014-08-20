@@ -1,0 +1,56 @@
+{% extends 'Ma27JiraIssueVoteBundle::layout.html.twig' %}
+{% block body %}
+<div class="container top-container row">
+    <div class="col-md-6">
+        <a href="{{ url('ma27_jira_issue_vote_select_filter') }}" class="btn btn-primary btn-custom-link">Switch filter</a>
+        <a href="{{ url('ma27_jira_issue_vote_settings') }}" class="btn btn-primary btn-custom-link">Settings</a>
+        <a href="{{ url('ma27_jira_issue_vote_logout') }}" class="btn btn-primary btn-custom-link">Logout</a>
+    </div>
+</div>
+<div class="container row" style="margin-top: 20px;">
+    <div class="col-md-8 col-md-offset-3">
+        {% if issues|length == 0 %}
+            <div class="alert alert-warning">
+                <p>The issue filter contains no issues</p>
+            </div>
+        {% else %}
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-info" style="text-align: right;">
+                    <i style="color: #888">There are {{ issues|length }} {% if issues|length == 1 %}Issue{% else %}Issues{% endif %}</i>
+                </li>
+                {% for issue in issues %}
+                    <li class="list-group-item issue-list-item" id="{{ issue.getId }}">
+                        <span class="badge">{{ issue.getVoteCount }} {% if issue.getVoteCount == 1 %}Vote{% else %}Votes{% endif %}</span> <b>{{ issue.getSummary }}</b><i style="color: #888"> ({{ issue.formatCreationDate }})</i>
+                        <p style="text-align: justify; margin-top: 10px;">
+                            {% if issue.getDescription is not empty %}
+                                <span>{{ issue.getDescription|nl2br }}</span>
+                            {% else %}
+                                <i style="color: #888">No description available</i>
+                            {% endif %}
+                        </p>
+                        <p>
+                            <div class="row">
+                                <div class="col-md-6" style="height: 30px; line-height: 30px; font-size: 15px;">
+                                    <a href="{{ issue.getViewLink }}" target="_blank">View in JIRA</a>
+                                </div>
+                                <div class="col-md-6 vote-box">
+                                    {% if currentUser.getName == issue.getReporter %}
+                                        <span class="btn btn-danger btn-vote-custom disabled">You are the reporter</span>
+                                    {% else %}
+                                        {% if issue.hasUserVoted == false %}
+                                            <a href="{{ url('ma27_jira_issue_vote_voter', { 'issue_id': issue.getId }) }}" class="btn btn-danger btn-vote-custom">Vote</a>
+                                        {% else %}
+                                            <a href="{{ url('ma27_jira_issue_vote_unvote', { 'issue_id': issue.getId }) }}" class="btn btn-danger btn-vote-custom">Unvote</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block title %}Issue Voter{% endblock %}

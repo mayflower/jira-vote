@@ -1,0 +1,9 @@
+# This file is auto-generated during the composer install
+parameters:
+    locale: en
+    use_assetic_controller: true
+    secret: TestToken
+    debug_toolbar: false
+    debug_redirects: null
+    private_key: %kernel.root_dir%/oauth/private/jira.pem
+    jira_secret: MDNiMjE1NTk1YzM3MjA0ODU2ZTVhODA5

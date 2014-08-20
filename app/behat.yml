@@ -1,0 +1,8 @@
+default:
+    suites:
+        ma27_jira_issue_vote:
+            type: symfony_bundle
+            bundle: Ma27JiraIssueVoteBundle
+
+    extensions:
+        Behat\Symfony2Extension: ~

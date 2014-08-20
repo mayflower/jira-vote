@@ -1,0 +1,56 @@
+{% extends 'Ma27JiraIssueVoteBundle::layout.html.twig' %}
+{% block body %}
+<div class="container row" style="margin-top: 20px">
+    <div class="col-md-10 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>Select filter</h4>
+                <p>
+                    <span>In order to vote a set of issues, select a filter, please.</span>
+                </p>
+
+                {% if invalidFilterId|default(false) == true %}
+                    <div class="alert alert-danger">
+                        <p>The given token is invalid. Please contact an administrator!</p>
+                    </div>
+                {% endif %}
+
+                {% if filters is not empty %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Creator</th>
+                                <th>Select in order to vote</th>
+                                <th>Details</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for filter in filters %}
+                                <tr>
+                                    <td>{{ filter.name }}</td>
+                                    <td><q>{{ filter.owner }}</q></td>
+                                    <td>
+                                        <form action="{{ subscribe_issue_collection_url }}" method="post">
+                                            <input type="hidden" name="filter_id" value="{{ filter.id }}" />
+                                            <button type="submit" name="submit" class="btn btn-primary btn-sm" style="margin-top: 0px;">Show issues</button>
+                                        </form>
+                                    </td>
+                                    <td><a href="{{ filter.url }}" target="_blank">View in JIRA</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <p>You have no favourite issues yet. Please add some!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block title %}Select filter{% endblock %}

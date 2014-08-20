@@ -1,0 +1,59 @@
+{
+    "license": "MIT",
+    "type": "project",
+    "autoload": {
+        "psr-0": { "": ["src/", "app/features/"] }
+    },
+    "require": {
+        "php": ">=5.5",
+        "symfony/config": "~2.5",
+        "symfony/dependency-injection": "~2.5",
+        "symfony/http-kernel": "~2.5",
+        "symfony/http-foundation": "~2.5",
+        "symfony/event-dispatcher": "~2.5",
+        "symfony/routing": "~2.5",
+        "symfony/debug": "~2.5",
+        "symfony/templating": "~2.5",
+        "symfony/yaml": "~2.5",
+        "symfony/framework-bundle": "~2.5",
+        "symfony/twig-bundle": "~2.5",
+        "symfony/monolog-bundle": "~2.6",
+        "symfony/assetic-bundle": "~2.3",
+        "symfony/finder": "~2.5",
+        "symfony/form": "~2.5",
+        "symfony/console": "~2.5",
+        "guzzle/plugin-oauth": "~3.9",
+        "symfony/class-loader": "~2.5",
+        "symfony/web-profiler-bundle": "~2.5.3",
+        "sensio/distribution-bundle": "~3.0"
+    },
+    "require-dev": {
+        "sensio/generator-bundle": "~2.3",
+        "behat/behat": "~3.0",
+        "behat/symfony2-extension": "2.0.x-dev",
+        "behat/mink": "~1.5",
+        "behat/mink-browserkit-driver": "~1.1",
+        "phpunit/phpunit": "~4.1",
+        "mockery/mockery": "~0.9",
+        "symfony/dom-crawler": "~2.5"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
+        ],
+        "post-update-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin/"
+    }
+}

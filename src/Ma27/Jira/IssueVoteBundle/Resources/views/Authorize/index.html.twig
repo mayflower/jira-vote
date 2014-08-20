@@ -1,0 +1,17 @@
+{% extends 'Ma27JiraIssueVoteBundle::layout.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-4 jiraclient-login-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Jira-Vote <small class="small-head">Authorization required</small></h3>
+                    <p>
+                        <p>You have to allow this application to access your JIRA profile and properties.</p>
+                        <p>Please go to <a href="{{ jira_url }}">Jira</a> and authorize this application.</p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block title %}Authorization required{% endblock %}
