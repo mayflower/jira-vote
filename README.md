@@ -7,7 +7,7 @@ Jira Voter
 
 There are some steps to install this application:
 
-    git clone -b master https://github.com/Ma27/jira-voter /path/to/your/folder
+    git clone -b master https://github.com/Mayflower/jira-vote.git /path/to/your/folder
     cd /path/to/your/folder
 
 
