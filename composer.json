@@ -1,5 +1,5 @@
 {
-    "license": "MIT",
+    "license": "Apache v2",
     "type": "project",
     "autoload": {
         "psr-0": { "": ["src/", "app/features/"] }
