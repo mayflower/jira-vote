@@ -10,7 +10,7 @@ $apcLoader = new ApcClassLoader(sha1('Jira-Vote'), $loader);
 $loader->unregister();
 $apcLoader->register(true);
 
-$kernel = new AppKernel('dev', true);
+$kernel = new AppKernel('prod', true);
 $kernel->loadClassCache();
 
 $request  = Request::createFromGlobals();
