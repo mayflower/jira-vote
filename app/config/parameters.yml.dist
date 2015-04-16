@@ -1,0 +1,10 @@
+# Default parameters
+parameters:
+    locale: en
+    use_assetic_controller: true
+    secret: ThistTokenIsNotSecretChangeIt
+    debug_toolbar: false
+    debug_redirects: null
+    private_key: file://%kernel.root_dir%/oauth/private/jira.pem
+    jira_secret: ThistTokenIsNotSecretChangeIt
+    jira_host: https://example.org/jira

@@ -1,0 +1,66 @@
+*:focus {
+    outline: 0
+}
+
+.jiraclient-login-panel {
+    float: none;
+    margin: 30px auto;
+    position: relative
+}
+
+.small-head {
+    font-size: 12px
+}
+
+.top-container {
+    margin-bottom: 15px;
+    padding-top: 10px
+}
+
+label small {
+    color: #777;
+    font-size: 11px
+}
+
+.form-control {
+    border-radius: 4px !important
+}
+
+.btn {
+    margin-top: 10px
+}
+
+.issue-list-item:nth-child(odd) {
+    background-color: #f0f0f0
+}
+
+.issue-list-item:nth-child(even) {
+    background-color: #fafafa
+}
+
+.btn-custom-link {
+    margin-left: 15px;
+    cursor: pointer
+}
+
+.btn-vote-custom {
+    height: 30px;
+    line-height: 15px;
+    margin-top: 0;
+    font-size: 15px;
+    padding: 6px 18px
+}
+
+.vote-box {
+    text-align: right
+}
+
+@media screen and (max-width:974px){
+    .vote-box {
+        text-align: left
+    }
+}
+
+.issue-description-container {
+    display: none
+}

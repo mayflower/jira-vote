@@ -1,0 +1,22 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm-nightly
+
+
+matrix:
+  allow_failures:
+    - php: hhvm-nightly
+
+
+script:
+  - php app/check.php
+  #- app/console # call this in order to check the symfony process
+
+before_script:
+  - composer self-update
+  - composer install --dev

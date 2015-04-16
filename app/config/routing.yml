@@ -1,0 +1,5 @@
+mayflower_jira_issue_vote:
+    resource: "@MayflowerJiraIssueVoteBundle/Resources/config/routing.yml"
+    prefix:   /
+
+

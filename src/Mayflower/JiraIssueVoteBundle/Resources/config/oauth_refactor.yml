@@ -1,0 +1,24 @@
+services:
+    mayflower_url_generator:
+        class: Symfony\Component\Routing\Generator\UrlGenerator
+        public: false
+        factory: [@router, getGenerator]
+
+    mayflower_oauth_credentials:
+        class: Mayflower\JiraIssueVoteBundle\Jira\Credentials\JiraOAuthCredentials
+        arguments:
+            - "%consumer_key%"
+            - "%consumer_secret%"
+
+    mayflower_client_factory:
+        class: Mayflower\JiraIssueVoteBundle\Jira\ClientFactory
+        arguments:
+            - @mayflower_oauth_credentials
+            - %host%
+
+    mayflower_token_fetcher:
+        class: Mayflower\JiraIssueVoteBundle\Jira\TokenFetcher
+        arguments:
+            - @mayflower_url_generator
+            - @mayflower_client_factory
+            - %host%

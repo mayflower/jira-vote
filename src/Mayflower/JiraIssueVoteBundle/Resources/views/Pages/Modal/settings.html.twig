@@ -1,0 +1,33 @@
+<div class="modal fade" id="settingsDialog" tabindex="-1" role="dialog" aria-labelledby="settings-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="settings-label">Custom settings</h4>
+            </div>
+            <div class="modal-body" ng-controller="settingsController">
+                <div class="checkbox" >
+                    <label>
+                        <input type="checkbox" ng-model="settingVotedType" ng-click="onAddSettings('voted')" ng-init="settingVotedType={{ disable_voted_issues ? 'true' : 'false' }}" />
+                        <span>Issues you already voted</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="settingReportedType" ng-click="onAddSettings('reported')" ng-init="settingReportedType={{ disable_reported_issues ? 'true' : 'false' }}" />
+                        <span>Issues you reported</span>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="settingResolvedType" ng-click="onAddSettings('resolved')" ng-init="settingResolvedType={{ disable_resolved_issues ? 'true' : 'false' }}" />
+                        <span>Resolved issues</span>
+                    </label>
+                </div>
+                <div class="message" ng-show="result">
+                    <strong class="text-<% type %>"><% message %></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

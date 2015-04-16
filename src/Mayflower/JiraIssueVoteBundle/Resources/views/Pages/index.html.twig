@@ -1,0 +1,132 @@
+{% extends 'MayflowerJiraIssueVoteBundle::layout.html.twig' %}
+
+{% block custom_head_tags %}
+<script type="text/javascript">
+    var initialData = {
+        issues: [
+            {% for issue in issues %}
+            {
+                issueId: {{ issue.getId }},
+                summary: '{{ issue.getSummary }}',
+                votes: {{ issue.getVoteCount }},
+                url: '{{ issue.getViewLink }}',
+                userVoted: {{ issue.hasUserVoted ? 'true' : 'false' }},
+                description: '{{ issue.getDescription|replace({"\n": "<br />","\r":"<br />"})|raw }}',
+                timestamp: {{ issue.getCreationDateTimestamp }},
+                formattedTimestamp: '{{ issue.formatCreationDate }}',
+                reporter: '{{ issue.getReporter }}',
+                isResolved: {{ issue.getResolution ? 'false': 'true' }}
+            }{{ loop.index != loop.length ? ',' : '' }}
+            {% endfor %}
+        ],
+        currentFilter: '{{ filterName }}',
+        currentUser: '{{ currentUser.getName }}'
+    };
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="container top-container" style="text-align: right">
+    <button type="button" class="btn btn-primary btn-custom-link btn-sm" data-toggle="modal" data-target="#settingsDialog">Settings</button>
+    <a href="{{ url('ma27_jira_issue_vote_select_filter') }}" class="btn btn-primary btn-custom-link btn-sm">Switch filter</a>
+    <a href="{{ url('ma27_jira_issue_vote_logout') }}" class="btn btn-primary btn-custom-link btn-sm">Logout</a>
+</div>
+
+{% include 'MayflowerJiraIssueVoteBundle:Pages/Modal:settings.html.twig' %}
+
+<div class="row" style="margin-top: 20px;">
+    <div class="col-md-8 col-md-offset-2" ng-controller="issueController">
+        <div class="alert alert-info" ng-show="properties.issues.length === 0">
+            <p>The filter <q><% properties.currentFilter %></q> is empty</p>
+        </div>
+
+        <ul class="list-group" ng-show="properties.issues.length > 0">
+            <li class="list-group-item list-group-item-info" style="text-align: center">
+                <h4>Vote for issues of filter <q><% properties.currentFilter %></q></h4>
+            </li>
+            <li class="list-group-item issue-list-item">
+                <div class="container">
+                    <h4>Sort by:</h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary center-block" ng-click="orderBy='-formattedTimestamp'">Newest</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary center-block" ng-click="orderBy='summary'">Title</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary center-block" ng-click="orderBy='-votes'">Votes</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary center-block" ng-click="orderBy='reporter'">Reporter</button>
+                    </div>
+                </div>
+            </li>
+            <li ng-repeat="issue in properties.issues | orderBy:orderBy" class="list-group-item issue-list-item" ng-init="orderBy = ''" ng-controller="voteController">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p style="vertical-align: middle;"><b style="line-height: 30px;"><% issue.summary %></b></p>
+                    </div>
+                    <div class="col-md-4" style="text-align: right;">
+                        <p style="vertical-align: middle;">
+                            <span class="badge" ng-init="votes = issue.votes"><% votes %> <% labelPluralization(votes) %></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" style="line-height: 30px;">
+                        <p>
+                            <a href="<% issue.url %>" target="_blank">View in JIRA</a>
+                        </p>
+                    </div>
+                    <div class="col-md-6" style="text-align: right; line-height: 30px;">
+                        <p>
+                            <button type="button" class="btn btn-default btn-vote-custom disabled" disabled="disabled" ng-show="issue.reporter === properties.currentUser">
+                                <span class="glyphicon glyphicon-remove"></span> You are the reporter
+                            </button>
+                            <button type="button" class="btn btn-default btn-vote-custom disabled" disabled="disabled"
+                                    ng-show="issue.isResolved && issue.reporter !== properties.currentUser">
+                                <span class="glyphicon glyphicon-remove"></span> Issue is resolved
+                            </button>
+                            <button type="button"
+                                    class="btn btn-vote-custom"
+                                    ng-init="currentAction = issue.userVoted ? 'unvote' : 'vote'"
+                                    ng-class="buttonStyle ? buttonStyle : '<% issue.userVoted ? 'btn-danger' : 'btn-success' %>'"
+                                    ng-click="clickButton(issue.issueId, currentAction)"
+                                    ng-show="!issue.isResolved && issue.reporter !== properties.currentUser">
+                                            <span class="glyphicon"
+                                                  ng-class="glyphicon ? glyphicon : 'glyphicon-thumbs-<% issue.userVoted ? 'down' : 'up' %>'"
+                                                  ng-hide="progressVote"></span>
+                                                <span ng-show="progressVote">
+                                                    {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader.gif' %}
+                                                        <img src="{{ asset_url }}" />
+                                                    {% endimage %}
+                                                </span> <% currentAction === 'vote' ? 'Vote' : 'Unvote' %>
+                            </button>
+                            <p ng-show="error">
+                                <span class="text-danger">
+                                    <% error %>
+                                </span>
+                            </p>
+                        </p>
+                    </div>
+                </div>
+                <div ng-controller="toggleController">
+                    <p>
+                        <button class="btn btn-default" type="button" ng-click="onIssueToggle()">
+                            <span><span class="glyphicon glyphicon-chevron-<% arrowClass %> "></span></span>
+                        </button>
+                    </p>
+                    <div ng-show="showDetails">
+                        <span ng-show="issue.description" ng-bind-html="issue.description | sanitize"></span>
+                        <span ng-hide="issue.description"><i style="color: #888">No description available</i></span>
+                        <p><i style="color: #888">written at <% issue.formattedTimestamp %> by <% issue.reporter %></i></p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+{% block title %}Issue Voter{% endblock %}

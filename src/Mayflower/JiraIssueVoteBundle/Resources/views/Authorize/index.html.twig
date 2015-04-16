@@ -1,0 +1,24 @@
+{% extends 'MayflowerJiraIssueVoteBundle::layout.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-7 jiraclient-login-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Jira-Vote <small class="small-head">Authorization required</small></h3>
+                    <p>
+                        <p>To use Jira-Vote you have to allow this application to get access on JIRA. Please press "Authenticate" to do this.</p>
+                        <p><a href="{{ jira_url }}" class="btn btn-primary">Authenticate</a></p>
+                        <p>Please press allow on the next screen.</p>
+                        <p>
+                            {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/jira-auth-mask.PNG' %}
+                                <img src="{{ asset_url }}" class="img-responsive" alt="Jira Authorization Page" style="margin: 0 auto; display: block;" />
+                            {% endimage %}
+                        </p>
+                        <p>If you aren't logged in in JIRA you'll have to enter your credentials first and after that you will be redirected to the page with the "allow"-button.</p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block title %}Authorization required{% endblock %}
