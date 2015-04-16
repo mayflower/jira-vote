@@ -1,27 +1,7 @@
 services:
-    ma27_jira_issue_vote.client:
-        class: Mayflower\JiraIssueVoteBundle\Util\JiraClient
-        arguments: [%host%]
-
-    ma27_jira_issue_vote.oauth_credential.url_generator:
-        class: Mayflower\JiraIssueVoteBundle\Util\Generator\OAuthUrlGenerator
-        arguments: [%host%, @router, %client%]
-
-    ma27_jira_issue_vote.oauth.factory:
-        class: Mayflower\JiraIssueVoteBundle\Util\OAuthPluginFactory
-        arguments: [%consumer_key%, %consumer_secret%]
-
-    ma27_jira_issue_vote.oauth.proxy:
-        class: Mayflower\JiraIssueVoteBundle\Util\OAuthSecurityToken
-        arguments: [@session]
-
-    ma27_jira_issue_vote.oauth.provider:
-        class: Mayflower\JiraIssueVoteBundle\Util\OAuthSecurityAccessProvider
-        arguments: [@ma27_jira_issue_vote.client, @ma27_jira_issue_vote.oauth_credential.url_generator]
-
     ma27_jira_issue_vote.oauth.adapter:
         class: Mayflower\JiraIssueVoteBundle\Service\JiraPropertyAdapter
-        arguments: [@ma27_jira_issue_vote.oauth.provider]
+        arguments: [@mayflower_rest_handler]
 
     ma27_jira_issue_vote.issue.manager:
         class: Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext
@@ -45,11 +25,3 @@ services:
           - [set, ['@ma27_jira_issue_vote.filter.reported']]
           - [set, ['@ma27_jira_issue_vote.filter.resolved']]
           - [set, ['@ma27_jira_issue_vote.filter.voted']]
-
-    ma27_jira_issue_vote.listener.jira_credentials:
-        class: Mayflower\JiraIssueVoteBundle\EventListener\JiraCredentialsListener
-        arguments: [@ma27_jira_issue_vote.oauth.proxy]
-        calls:
-            - [ setContainer, [@service_container] ]
-        tags:
-            - { name: kernel.event_subscriber }

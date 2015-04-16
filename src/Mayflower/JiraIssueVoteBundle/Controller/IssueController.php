@@ -1,14 +1,10 @@
 <?php
+
 namespace Mayflower\JiraIssueVoteBundle\Controller;
 
-use Closure;
-use Guzzle\Http\Exception\ClientErrorResponseException;
-use Guzzle\Http\Message\Response;
-use Mayflower\JiraIssueVoteBundle\EventListener\JiraCredentialsListener;
-use Mayflower\JiraIssueVoteBundle\Util\OAuthSecurityToken;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -26,42 +22,37 @@ class IssueController extends Controller
      * Action which handles the homepage of the issue
      * voter
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function indexAction()
     {
-        $that = &$this;
-        return static::performHandledJiraAction(
-            function () use ($that)
-            {
-                /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-                $session = $that->get('session');
-                /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
-                $manager = $that->get('ma27_jira_issue_vote.issue.manager');
-                /** @var \Mayflower\JiraIssueVoteBundle\Service\Filter\FilterContainer $filter */
-                $filter = $that->get('ma27_jira_issue_vote.filter.container');
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session = $this->get('session');
+        /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
+        $manager = $this->get('ma27_jira_issue_vote.issue.manager');
+        /** @var \Mayflower\JiraIssueVoteBundle\Service\Filter\FilterContainer $filter */
+        $filter = $this->get('ma27_jira_issue_vote.filter.container');
 
-                $filterId = $session->get(IssueController::SELECTED_FILTER_ID);
-                if ($filterId === null) {
-                    return $that->redirect($that->generateUrl('ma27_jira_issue_vote_select_filter'));
-                }
+        $filterId = $session->get(self::SELECTED_FILTER_ID);
+        if ($filterId === null) {
+            return $this->redirect($this->generateUrl('ma27_jira_issue_vote_select_filter'));
+        }
 
-                $issues = $manager->findAndConvertIssuesToDataCollection($filterId);
+        $issues = $manager->findAndConvertIssuesToDataCollection($filterId);
 
-                $user = $manager->getCurrentUser();
-                $list = $filter->process(iterator_to_array($issues->all()), array('consumer' => $user));
+        $user = $manager->getCurrentUser();
+        $list = $filter->process(iterator_to_array($issues->all()), array('consumer' => $user));
 
-                return $that->render('MayflowerJiraIssueVoteBundle:Pages:index.html.twig', array(
-                    'issues' => $list,
-                    'currentUser' => $user,
-                    'filterName' => $session->get(IssueController::SELECT_FILTER_NAME),
-                    'disable_voted_issues' => $session->get(IssueController::DISABLE_VOTED_ID),
-                    'disable_reported_issues' => $session->get(IssueController::DISABLE_REPORTED_ID),
-                    'disable_resolved_issues' => $session->get(IssueController::DISABLE_RESOLVED_ID)
-                ));
-            },
-            array($this, 'handleRequestErrorException'),
-            $this->get('ma27_jira_issue_vote.oauth.proxy')
+        return $this->render(
+            'MayflowerJiraIssueVoteBundle:Pages:index.html.twig',
+            [
+                'issues'                  => $list,
+                'currentUser'             => $user,
+                'filterName'              => $session->get(self::SELECT_FILTER_NAME),
+                'disable_voted_issues'    => $session->get(self::DISABLE_VOTED_ID),
+                'disable_reported_issues' => $session->get(self::DISABLE_REPORTED_ID),
+                'disable_resolved_issues' => $session->get(self::DISABLE_RESOLVED_ID)
+            ]
         );
     }
 
@@ -75,11 +66,11 @@ class IssueController extends Controller
         $session = $this->get('session');
 
         return new JsonResponse(
-            array(
-                'hideVoted'    => $session->get(static::DISABLE_VOTED_ID),
-                'hideReported' => $session->get(static::DISABLE_REPORTED_ID),
-                'hideResolved' => $session->get(static::DISABLE_RESOLVED_ID)
-            )
+            [
+                'hideVoted'    => $session->get(self::DISABLE_VOTED_ID),
+                'hideReported' => $session->get(self::DISABLE_REPORTED_ID),
+                'hideResolved' => $session->get(self::DISABLE_RESOLVED_ID)
+            ]
         );
     }
 
@@ -89,44 +80,39 @@ class IssueController extends Controller
      *
      * @param Request $request Request object for this page
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function selectFilterAction(Request $request)
     {
-        $that = &$this;
-        return static::performHandledJiraAction(
-            function () use ($that, $request)
-            {
-                /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
-                $manager = $that->get('ma27_jira_issue_vote.issue.manager');
-                $list    = $manager->getFavouriteFilters()->getAll(true);
-                $errors  = array();
-                $isIdValid = false;
+        /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
+        $manager   = $this->get('ma27_jira_issue_vote.issue.manager');
+        $list      = $manager->getFavouriteFilters()->getAll(true);
+        $errors    = [];
+        $invalidId = false;
 
-                if ('POST' === $request->getMethod()) {
-                    $filterId  = (int)$request->get('filter_id');
+        if ('POST' === $request->getMethod()) {
+            $filterId  = (int) $request->get('filter_id');
 
-                    foreach ($list as $item) {
-                        if ($item['id'] === $filterId) {
-                            $that->get('session')->set(IssueController::SELECTED_FILTER_ID, $filterId);
-                            $that->get('session')->set(IssueController::SELECT_FILTER_NAME, $request->get('filter_name'));
-                            return $that->redirect($that->generateUrl('ma27_jira_issue_vote_homepage'));
-                        }
-                    }
+            foreach ($list as $item) {
+                if ($item['id'] === $filterId) {
+                    $this->get('session')->set(self::SELECTED_FILTER_ID, $filterId);
+                    $this->get('session')->set(self::SELECT_FILTER_NAME, $request->get('filter_name'));
+
+                    return $this->redirect($this->generateUrl('ma27_jira_issue_vote_homepage'));
                 }
+            }
 
-                return $that->render(
-                    'MayflowerJiraIssueVoteBundle:Pages:select_filter.html.twig',
-                    array(
-                        'filters' => $list,
-                        'subscribe_issue_collection_url' => $that->generateUrl('ma27_jira_issue_vote_select_filter'),
-                        'errors' => $errors,
-                        'invalidFilterId' => $isIdValid
-                    )
-                );
-            },
-            array($this, 'handleRequestErrorException'),
-            $this->get('ma27_jira_issue_vote.oauth.proxy')
+            $invalidId = true;
+        }
+
+        return $this->render(
+            'MayflowerJiraIssueVoteBundle:Pages:select_filter.html.twig',
+            [
+                'filters'                        => $list,
+                'subscribe_issue_collection_url' => $this->generateUrl('ma27_jira_issue_vote_select_filter'),
+                'errors'                         => $errors,
+                'invalidFilterId'                => $invalidId
+            ]
         );
     }
 
@@ -135,25 +121,11 @@ class IssueController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function voteAction(Request $request)
     {
-        $that = &$this;
-        return static::performHandledJiraAction(
-            function () use ($that, $request)
-            {
-                /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
-                $manager = $that->get('ma27_jira_issue_vote.issue.manager');
-
-                $result = $manager->voteIssue($id = $request->get('issue_id'));
-                if (!$result) {
-                    return new HttpResponse(null, 500);
-                }
-                return new HttpResponse(null, 200);
-            },
-            array($this, 'handleRequestErrorException')
-        );
+        return $this->doVote($request, 'vote');
     }
 
     /**
@@ -161,26 +133,11 @@ class IssueController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function unvoteAction(Request $request)
     {
-        $that = &$this;
-        return static::performHandledJiraAction(
-            function () use ($that, $request)
-            {
-                /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
-                $manager = $that->get('ma27_jira_issue_vote.issue.manager');
-
-                $result = $manager->unvoteIssue($id = $request->get('issue_id'));
-                if (!$result) {
-                    return new HttpResponse(null, 500);
-                }
-                return new HttpResponse(null, 200);
-            },
-            array($this, 'handleRequestErrorException'),
-            $this->get('ma27_jira_issue_vote.oauth.proxy')
-        );
+        return $this->doVote($request, 'unvote');
     }
 
     /**
@@ -188,11 +145,11 @@ class IssueController extends Controller
      *
      * @param Request $request Http Request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function setHideIssuesAction(Request $request)
     {
-        return $this->storeSetting($request->get('option'), static::DISABLE_VOTED_ID);
+        return $this->storeSetting($request->get('option'), self::DISABLE_VOTED_ID);
     }
 
     /**
@@ -200,20 +157,23 @@ class IssueController extends Controller
      *
      * @param Request $request Http request
      *
-     * @return HttpResponse
+     * @return Response
      */
     public function setReportedIssuesAction(Request $request)
     {
-        return $this->storeSetting($request->get('option'), static::DISABLE_REPORTED_ID);
+        return $this->storeSetting($request->get('option'), self::DISABLE_REPORTED_ID);
     }
 
     /**
+     * Action which is responsible for the reported resolved setting
+     *
      * @param Request $request
-     * @return HttpResponse
+     *
+     * @return Response
      */
     public function setResolvedIssuesAction(Request $request)
     {
-        return $this->storeSetting($request->get('option'), static::DISABLE_RESOLVED_ID);
+        return $this->storeSetting($request->get('option'), self::DISABLE_RESOLVED_ID);
     }
 
     /**
@@ -226,70 +186,41 @@ class IssueController extends Controller
      */
     private function storeSetting($option, $sessionKey)
     {
-        if ('true' === $option = mb_strtolower($option)) {
+        if ('true' === $option = strtolower($option)) {
             $this->get('session')->set($sessionKey, true);
         } else {
             $this->get('session')->set($sessionKey, false);
         }
 
-        // just send an empty response to the client in order to mark mark as success
-        return new HttpResponse(null);
+        return new Response(null, 204);
     }
 
     /**
-     * Wraps a command and catches curl exceptions from guzzle
+     * Internal action that votes or unvotes a ticket.
+     * In order to prevent ugly code duplication, this action was implemented
      *
-     * @param callable           $command      Command to execute
-     * @param callable           $errorHandler Handler which will be triggered if a curl exception occurs
-     * @param OAuthSecurityToken $proxy        Additional proxy to check credentials
+     * @param Request $request
+     * @param string $type
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
-     * @throws \Guzzle\Http\Exception\ClientErrorResponseException
-     *
-     * @api
+     * @throws \InvalidArgumentException If an invalid vote type is given
      */
-    public static function performHandledJiraAction(Closure $command, $errorHandler = null, OAuthSecurityToken $proxy = null)
+    private function doVote(Request $request, $type = 'vote')
     {
-        try {
-            if (
-                null !== $proxy
-                && !$proxy->hasToken()
-                || null !== $proxy
-                && false === $proxy->getSession()->has(JiraCredentialsListener::OAUTH_LOGIN_FLAG)
-            ) {
-                $exception = new ClientErrorResponseException();
-                $exception->setResponse(new Response(401));
-
-                throw $exception;
-            }
-
-            return call_user_func($command);
-        } catch (ClientErrorResponseException $ex) {
-            if (null !== $errorHandler) {
-                if (!is_callable($errorHandler)) {
-                    throw new \LogicException('Errorhandler must be a callable or null!');
-                }
-                
-                return call_user_func($errorHandler, $ex);
-            }
-
-            throw $ex;
+        if (!in_array($type, ['vote', 'unvote'])) {
+            throw new \InvalidArgumentException(sprintf('Only the types vote and unvote are allowed!'));
         }
-    }
 
-    /**
-     * Simple handler for exceptions which invalidates the tokens and renders an error message
-     *
-     * @param ClientErrorResponseException $ex Caught exception
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    private function handleRequestErrorException(ClientErrorResponseException $ex)
-    {
-        return $this->forward(
-            'MayflowerJiraIssueVoteBundle:Authorize:invalidateTokens',
-            array('redirect_url' => $this->generateUrl('ma27_jira_issue_vote_verify'))
-        );
+        /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
+        $manager = $this->get('ma27_jira_issue_vote.issue.manager');
+
+        $function = sprintf('%sIssue', $type);
+        $result   = $manager->{$function}($request->get('issue_id'));
+        if (!$result) {
+            return new Response(null, 500);
+        }
+
+        return new Response(null, 204);
     }
 }

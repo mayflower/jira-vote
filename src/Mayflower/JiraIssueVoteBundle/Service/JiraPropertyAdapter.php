@@ -1,8 +1,8 @@
 <?php
 namespace Mayflower\JiraIssueVoteBundle\Service;
 
-use Guzzle\Http\Exception\ClientErrorResponseException;
-use Mayflower\JiraIssueVoteBundle\Util\RestProviderInterface;
+use GuzzleHttp\Exception\RequestException;
+use Mayflower\JiraIssueVoteBundle\Jira\RestHandler;
 
 /**
  * Concrete implementation of a issue tracker loader for the JIRA rest api
@@ -12,21 +12,20 @@ use Mayflower\JiraIssueVoteBundle\Util\RestProviderInterface;
 class JiraPropertyAdapter implements JiraPropertyLoaderInterface
 {
     /**
-     * Provider which handles the http requests
-     * @var \Mayflower\JiraIssueVoteBundle\Util\RestProviderInterface
+     * @var RestHandler
      */
-    private $oauthProvider;
+    private $restHandler;
 
     /**
      * Sets the rest provider
      *
-     * @param RestProviderInterface $oauthProvider
+     * @param RestHandler $restHandler
      *
      * @api
      */
-    public function __construct(RestProviderInterface $oauthProvider)
+    public function __construct(RestHandler $restHandler)
     {
-        $this->oauthProvider = $oauthProvider;
+        $this->restHandler = $restHandler;
     }
 
     /**
@@ -34,8 +33,7 @@ class JiraPropertyAdapter implements JiraPropertyLoaderInterface
      */
     public function loadFavouriteIssues()
     {
-        $res = $this->oauthProvider->processJiraRequest('rest/api/2/filter/favourite', 'get');
-        return $res;
+        return $this->restHandler->executeApiCall('rest/api/2/filter/favourite');
     }
 
     /**
@@ -43,11 +41,9 @@ class JiraPropertyAdapter implements JiraPropertyLoaderInterface
      */
     public function loadIssuesByFilterId($filterId)
     {
-        $filterProps = $this->oauthProvider->processJiraRequest('rest/api/2/filter/' . $filterId, 'get');
-        $result = $this->oauthProvider->processJiraRequest($filterProps['searchUrl'], 'get');
-        $issues = $result['issues'];
+        $filterInfo = $this->restHandler->executeApiCall(sprintf('rest/api/2/filter/%d', $filterId));
 
-        return $issues;
+        return $this->restHandler->executeApiCall($filterInfo['searchUrl'])['issues'];
     }
 
     /**
@@ -55,7 +51,7 @@ class JiraPropertyAdapter implements JiraPropertyLoaderInterface
      */
     public function getCurrentUser()
     {
-        return $this->oauthProvider->processJiraRequest('rest/auth/1/session', 'get');
+        return $this->restHandler->executeApiCall('rest/auth/1/session');
     }
 
     /**
@@ -63,7 +59,7 @@ class JiraPropertyAdapter implements JiraPropertyLoaderInterface
      */
     public function getJiraHost()
     {
-        return $this->oauthProvider->getClient()->getBaseUrl();
+        return $this->restHandler->getJira();
     }
 
     /**
@@ -90,21 +86,22 @@ class JiraPropertyAdapter implements JiraPropertyLoaderInterface
      *
      * @return boolean
      *
-     * @throws ClientErrorResponseException
+     * @throws RequestException
      *
      * @api
      */
     private function doVoteIssue($id, $type = 'post')
     {
         try {
-            $this->oauthProvider->processJiraRequest('rest/api/2/issue/' . $id . '/votes', $type);
-            return true;
-        } catch (ClientErrorResponseException $ex) {
+            $this->restHandler->executeApiCall(sprintf('rest/api/2/issue/%d/votes', $id), $type);
+        } catch (RequestException $ex) {
             if ($ex->getResponse()->getStatusCode() === 404) {
                 return false;
             }
 
             throw $ex;
         }
+
+        return true;
     }
-} 
+}

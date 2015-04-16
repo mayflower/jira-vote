@@ -22,3 +22,15 @@ services:
             - @mayflower_url_generator
             - @mayflower_client_factory
             - %host%
+
+    mayflower_rest_handler:
+        class: Mayflower\JiraIssueVoteBundle\Jira\RestHandler
+        arguments:
+            - @session
+            - @mayflower_client_factory
+            - %host%
+
+    mayflower_error_listener:
+        class: Mayflower\JiraIssueVoteBundle\EventListener\OAuthCredentialsListener
+        tags:
+         - { name: kernel.event_subscriber }

@@ -2,6 +2,7 @@
 
 namespace Mayflower\JiraIssueVoteBundle\Jira;
 
+use GuzzleHttp\Client;
 use Mayflower\JiraIssueVoteBundle\Jira\Credentials\AccessToken;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -14,6 +15,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class TokenFetcher
 {
+    const OAUTH_TOKEN = 'oauth';
+
     /**
      * @var string
      */
@@ -48,25 +51,56 @@ class TokenFetcher
      */
     public function requestTempToken()
     {
-        $uri = UrlUtils::getTempTokenUrl(
-            $this->baseUrl,
-            $this->generator->generate('ma27_jira_issue_vote_verify_callback', [], UrlGeneratorInterface::ABSOLUTE_URL)
+        return $this->getToken(
+            $this->factory->createClient(),
+            UrlUtils::getTempTokenUrl(
+                $this->baseUrl,
+                $this->generator->generate(
+                    'ma27_jira_issue_vote_verify_callback',
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
+            )
         );
-
-        $client = $this->factory->createClient();
-        $raw    = (string) $client->post($uri, ['config' => ['auth' => 'oauth']])->getBody();
-        parse_str($raw, $params);
-
-        return new AccessToken($params['oauth_token'], $params['oauth_token_secret']);
     }
 
     /**
      * Requests the authentication token
      *
-     * 
+     * @param AccessToken $token
+     * @param string $verifier
+     *
+     * @return AccessToken
      */
-    public function requestAuthToken()
+    public function requestAuthToken(AccessToken $token, $verifier)
     {
+        return $this->getToken(
+            $this->factory->createClient($token),
+            UrlUtils::getAccessTokenUrl(
+                $this->baseUrl,
+                $this->generator->generate(
+                    'ma27_jira_issue_vote_verify_callback',
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
+                $verifier
+            )
+        );
+    }
 
+    /**
+     * Requests the token from jira oauth
+     *
+     * @param Client $client
+     * @param string $uri
+     *
+     * @return AccessToken
+     */
+    private function getToken(Client $client, $uri)
+    {
+        $raw = (string) $client->post($uri, ['config' => ['auth' => 'oauth']])->getBody();
+        parse_str($raw, $params);
+
+        return new AccessToken($params['oauth_token'], $params['oauth_token_secret']);
     }
 }
