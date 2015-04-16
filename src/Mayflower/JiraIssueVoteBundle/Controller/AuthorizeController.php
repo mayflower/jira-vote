@@ -27,9 +27,9 @@ class AuthorizeController extends Controller
      */
     public function indexAction()
     {
-        /*/** @var \Mayflower\JiraIssueVoteBundle\Jira\TokenFetcher $tokenFetcher
+        /** @var \Mayflower\JiraIssueVoteBundle\Jira\TokenFetcher $tokenFetcher */
         $tokenFetcher = $this->get('mayflower_token_fetcher');
-        /** @var \Symfony\Component\HttpFoundation\Session\Session $session
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
         $session = $this->get('session');
 
         // destroy legacy session data
@@ -48,21 +48,6 @@ class AuthorizeController extends Controller
                     $this->container->getParameter('host'), $credentialSet->getToken()
                 )
             ]
-        );*/
-
-        /** @var \Mayflower\JiraIssueVoteBundle\Util\OAuthSecurityAccessProvider $provider */
-        $provider = $this->get('ma27_jira_issue_vote.oauth.provider');
-        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-        $session = $this->get('session');
-        $session->remove(JiraCredentialsListener::OAUTH_LOGIN_FLAG);
-        $session->remove(OAuthSecurityProxy::TEMP_TOKEN_ID);
-        $credentials = $provider->getCredentials();
-        $session->set(OAuthSecurityProxy::TEMP_TOKEN_ID, $credentials);
-        return $this->render(
-            'MayflowerJiraIssueVoteBundle:Authorize:index.html.twig',
-            array(
-                'jira_url' => $provider->getAuthUrl()
-            )
         );
     }
 
