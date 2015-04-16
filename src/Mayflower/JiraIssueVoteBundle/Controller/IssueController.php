@@ -2,6 +2,7 @@
 
 namespace Mayflower\JiraIssueVoteBundle\Controller;
 
+use Mayflower\JiraIssueVoteBundle\Jira\TokenFetcher;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +34,10 @@ class IssueController extends Controller
         /** @var \Mayflower\JiraIssueVoteBundle\Service\Filter\FilterContainer $filter */
         $filter = $this->get('ma27_jira_issue_vote.filter.container');
 
+        if (!$session->has(TokenFetcher::OAUTH_TOKEN)) {
+            return $this->redirect($this->generateUrl('ma27_jira_issue_vote_verify'));
+        }
+
         $filterId = $session->get(self::SELECTED_FILTER_ID);
         if ($filterId === null) {
             return $this->redirect($this->generateUrl('ma27_jira_issue_vote_select_filter'));
@@ -41,7 +46,7 @@ class IssueController extends Controller
         $issues = $manager->findAndConvertIssuesToDataCollection($filterId);
 
         $user = $manager->getCurrentUser();
-        $list = $filter->process(iterator_to_array($issues->all()), array('consumer' => $user));
+        $list = $filter->process(iterator_to_array($issues->all()), ['consumer' => $user]);
 
         return $this->render(
             'MayflowerJiraIssueVoteBundle:Pages:index.html.twig',
@@ -85,18 +90,24 @@ class IssueController extends Controller
     public function selectFilterAction(Request $request)
     {
         /** @var \Mayflower\JiraIssueVoteBundle\Service\IssueDataViewContext $manager */
-        $manager   = $this->get('ma27_jira_issue_vote.issue.manager');
+        $manager = $this->get('ma27_jira_issue_vote.issue.manager');
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session   = $this->get('session');
         $list      = $manager->getFavouriteFilters()->getAll(true);
         $errors    = [];
         $invalidId = false;
+
+        if (!$session->has(TokenFetcher::OAUTH_TOKEN)) {
+            return $this->redirect($this->generateUrl('ma27_jira_issue_vote_verify'));
+        }
 
         if ('POST' === $request->getMethod()) {
             $filterId  = (int) $request->get('filter_id');
 
             foreach ($list as $item) {
                 if ($item['id'] === $filterId) {
-                    $this->get('session')->set(self::SELECTED_FILTER_ID, $filterId);
-                    $this->get('session')->set(self::SELECT_FILTER_NAME, $request->get('filter_name'));
+                    $session->set(self::SELECTED_FILTER_ID, $filterId);
+                    $session->set(self::SELECT_FILTER_NAME, $request->get('filter_name'));
 
                     return $this->redirect($this->generateUrl('ma27_jira_issue_vote_homepage'));
                 }

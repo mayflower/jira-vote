@@ -75,11 +75,11 @@ class RestHandler
             throw new \InvalidArgumentException(sprintf('The methods get, post, put and delete are allowed only!'));
         }
 
-        $token = unserialize($this->session->get(TokenFetcher::OAUTH_TOKEN));
-        if (!$token && $this->skipOnEmptyToken) {
+        if (!$this->session->has(TokenFetcher::OAUTH_TOKEN) && $this->skipOnEmptyToken) {
             throw new InvalidTokenException;
         }
 
+        $token  = unserialize($this->session->get(TokenFetcher::OAUTH_TOKEN));
         $client = $this->clientFactory->createClient($token);
 
         $options = [];
@@ -106,7 +106,7 @@ class RestHandler
         }
 
         return $client->send(
-            $client->createRequest($method, sprintf('%s/%s', $this->jiraHost, $uri), $options)
+            $client->createRequest($method, $this->getUrl($uri), $options)
         )->json();
     }
 
@@ -118,5 +118,22 @@ class RestHandler
     public function getJira()
     {
         return $this->jiraHost;
+    }
+
+    /**
+     * Generates a url
+     * Helper which checks if the uri is already an url
+     *
+     * @param string $uri
+     *
+     * @return string
+     */
+    private function getUrl($uri)
+    {
+        if (filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
+            return $uri;
+        }
+
+        return sprintf('%s/%s', $this->jiraHost, $uri);
     }
 }

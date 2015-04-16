@@ -67,8 +67,8 @@ class ClientFactory
 
         $clientConfig = ['base_url' => $this->baseUrl];
         $oauthPlugin  = new Oauth1($config);
+        $client       = new Client($clientConfig);
 
-        $client = new Client($clientConfig);
         $client->getEmitter()->attach($oauthPlugin);
 
         return $this->client = $client;

@@ -68,9 +68,9 @@ class IssueDataViewContext
      */
     public function findAndConvertIssuesToDataCollection($filterId)
     {
-        $issues = $this->propertyLoader->loadIssuesByFilterId($filterId);
+        $issues     = $this->propertyLoader->loadIssuesByFilterId($filterId);
         $collection = new IssueCollection();
-        $host = $this->propertyLoader->getJiraHost();
+        $host       = $this->propertyLoader->getJiraHost();
 
         foreach ($issues as $issue) {
             $issueDomain = new Issue();
