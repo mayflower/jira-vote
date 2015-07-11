@@ -16,9 +16,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class AuthorizeController extends Controller
 {
-    const TOKEN_DANGER  = 'danger';
-    const TOKEN_SUCCESS = 'success';
-    const TOKEN_WARNING = 'warning';
+    const TOKEN_DANGER     = 'danger';
+    const TOKEN_SUCCESS    = 'success';
+    const TOKEN_WARNING    = 'warning';
+    const TEMP_OAUTH_TOKEN = 'jira.oauth.temp.token';
 
     /**
      * Action which renders the "unauthorized"-Template and stores the temporary
@@ -34,7 +35,7 @@ class AuthorizeController extends Controller
         $session = $this->get('session');
 
         $credentialSet = $tokenFetcher->requestTempToken();
-        $session->set(TokenFetcher::OAUTH_TOKEN, serialize($credentialSet));
+        $session->set(self::TEMP_OAUTH_TOKEN, serialize($credentialSet));
 
         return $this->render(
             '@MayflowerJiraIssueVote/Authorize/index.html.twig',
@@ -58,9 +59,13 @@ class AuthorizeController extends Controller
         /** @var TokenFetcher $tokenFetcher */
         $tokenFetcher = $this->get('mayflower_token_fetcher');
         /** @var \Mayflower\JiraIssueVoteBundle\Jira\Credentials\AccessToken $token */
-        $token = unserialize($request->getSession()->get(TokenFetcher::OAUTH_TOKEN));
+        $token = unserialize($request->getSession()->get(self::TEMP_OAUTH_TOKEN));
         /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
         $session = $this->get('session');
+
+        if (!$token) {
+            return $this->redirect($this->generateUrl('ma27_jira_issue_vote_verify'));
+        }
 
         $verifyKey = $request->get('oauth_verifier');
         if (!$verifyKey) {
