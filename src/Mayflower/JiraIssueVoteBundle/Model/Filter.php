@@ -1,5 +1,5 @@
 <?php
-namespace Mayflower\JiraIssueVoteBundle\Entity;
+namespace Mayflower\JiraIssueVoteBundle\Model;
 
 /**
  * Objects which represents an issue filter
@@ -31,6 +31,25 @@ class Filter
      * @var string
      */
     private $viewUrl;
+
+    /**
+     * Builds a filter model by the raw data of the jira api
+     *
+     * @param array $params
+     *
+     * @return Filter
+     */
+    public static function fill(array $params)
+    {
+        $model = new self;
+
+        $model->setId($params['id']);
+        $model->setName($params['name']);
+        $model->setOwnerName($params['owner']['name']);
+        $model->setViewUrl($params['viewUrl']);
+
+        return $model;
+    }
 
     /**
      * Sets the filter id

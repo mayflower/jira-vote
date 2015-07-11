@@ -30,9 +30,9 @@ class MayflowerJiraIssueVoteExtension extends Extension
         $container->setParameter('client', $config['client_host']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
 
-        // load the services of the refactored jira client
+        // load the refactored components
         $loader->load('oauth_refactor.yml');
+        $loader->load('model_refactor.yml');
     }
 }

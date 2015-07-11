@@ -6,28 +6,28 @@
         issues: [
             {% for issue in issues %}
             {
-                issueId: {{ issue.getId }},
-                summary: '{{ issue.getSummary }}',
-                votes: {{ issue.getVoteCount }},
-                url: '{{ issue.getViewLink }}',
+                issueId: {{ issue.id }},
+                summary: '{{ issue.summary }}',
+                votes: {{ issue.voteCount }},
+                url: '{{ issue.viewLink }}',
                 userVoted: {{ issue.hasUserVoted ? 'true' : 'false' }},
-                description: '{{ issue.getDescription|replace({"\n": "<br />","\r":"<br />"})|raw }}',
-                timestamp: {{ issue.getCreationDateTimestamp }},
+                description: '{{ issue.description|replace({"\n": "<br />","\r":"<br />"})|raw }}',
+                timestamp: {{ issue.creationDateTimestamp }},
                 formattedTimestamp: '{{ issue.formatCreationDate }}',
-                reporter: '{{ issue.getReporter }}',
-                isResolved: {{ issue.getResolution ? 'false': 'true' }}
+                reporter: '{{ issue.reporter }}',
+                isResolved: {{ issue.resolution ? 'false': 'true' }}
             }{{ loop.index != loop.length ? ',' : '' }}
             {% endfor %}
         ],
         currentFilter: '{{ filterName }}',
-        currentUser: '{{ currentUser.getName }}'
+        currentUser: '{{ currentUser.name }}'
     };
 </script>
 {% endblock %}
 
 {% block body %}
 <div class="container top-container" style="text-align: right">
-    <button type="button" class="btn btn-primary btn-custom-link btn-sm" data-toggle="modal" data-target="#settingsDialog">Settings</button>
+    <button type="button" class="btn btn-primary btn-custom-link btn-sm" data-toggle="modal" data-target="#settingsDialog">Filter issues</button>
     <a href="{{ url('ma27_jira_issue_vote_select_filter') }}" class="btn btn-primary btn-custom-link btn-sm">Switch filter</a>
     <a href="{{ url('ma27_jira_issue_vote_logout') }}" class="btn btn-primary btn-custom-link btn-sm">Logout</a>
 </div>
@@ -43,23 +43,31 @@
         <ul class="list-group" ng-show="properties.issues.length > 0">
             <li class="list-group-item list-group-item-info" style="text-align: center">
                 <h4>Vote for issues of filter <q><% properties.currentFilter %></q></h4>
+                <p>This filter contains <% properties.issues.length %> issues</p>
             </li>
             <li class="list-group-item issue-list-item">
                 <div class="container">
-                    <h4>Sort by:</h4>
+                    <h4>Sort criteria</h4>
+                    <p>How do you want to sort the issues?</p>
                 </div>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <button type="button" class="btn btn-primary center-block" ng-click="orderBy='-formattedTimestamp'">Newest</button>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <button type="button" class="btn btn-primary center-block" ng-click="orderBy='summary'">Title</button>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <button type="button" class="btn btn-primary center-block" ng-click="orderBy='-votes'">Votes</button>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <button type="button" class="btn btn-primary center-block" ng-click="orderBy='reporter'">Reporter</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary center-block" ng-click="orderBy='formattedTimestamp'">Oldest</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary center-block" ng-click="orderBy=''">Reset</button>
                     </div>
                 </div>
             </li>
@@ -87,7 +95,7 @@
                             </button>
                             <button type="button" class="btn btn-default btn-vote-custom disabled" disabled="disabled"
                                     ng-show="issue.isResolved && issue.reporter !== properties.currentUser">
-                                <span class="glyphicon glyphicon-remove"></span> Issue is resolved
+                                <span class="glyphicon glyphicon-remove"></span> Issue is closed
                             </button>
                             <button type="button"
                                     class="btn btn-vote-custom"
@@ -115,13 +123,15 @@
                 <div ng-controller="toggleController">
                     <p>
                         <button class="btn btn-default" type="button" ng-click="onIssueToggle()">
-                            <span><span class="glyphicon glyphicon-chevron-<% arrowClass %> "></span></span>
+                            <span><span class="glyphicon glyphicon-chevron-<% arrowClass %>"></span></span>
                         </button>
                     </p>
                     <div ng-show="showDetails">
                         <span ng-show="issue.description" ng-bind-html="issue.description | sanitize"></span>
-                        <span ng-hide="issue.description"><i style="color: #888">No description available</i></span>
-                        <p><i style="color: #888">written at <% issue.formattedTimestamp %> by <% issue.reporter %></i></p>
+                        <span ng-hide="issue.description" class="issue-generated-info-text"><span>No description available</span></span>
+                        <p class="issue-generated-info-text">
+                            <span>Reported at <% issue.formattedTimestamp %> by <% issue.reporter %></span>
+                        </p>
                     </div>
                 </div>
             </li>

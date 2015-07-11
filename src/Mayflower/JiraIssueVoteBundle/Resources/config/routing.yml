@@ -16,28 +16,12 @@ ma27_jira_issue_vote_select_filter:
 
 ma27_jira_issue_vote_voter:
     path: /vote-issue/{issue_id}
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:vote }
+    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:vote, _method: POST }
 
 ma27_jira_issue_vote_unvote:
     path: /unvote-issue/{issue_id}
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:unvote }
+    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:unvote, _method: DELETE }
 
 ma27_jira_issue_vote_logout:
     path: /logout
     defaults: { _controller: MayflowerJiraIssueVoteBundle:Authorize:invalidateTokens }
-
-ma27_jira_issue_vote_settings_hide_voted:
-    path: /settings/voted/{option}
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:setHideIssues }
-
-ma27_jira_issue_vote_settings_hide_reported:
-    path: /settings/reported/{option}
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:setReportedIssues }
-
-ma27_jira_issue_vote_settings_hide_resolved:
-    path: /settings/resolved/{option}
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:setResolvedIssues }
-
-ma27_jira_issue_vote_settings_list:
-    path: /settings/list
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Issue:settingsList }

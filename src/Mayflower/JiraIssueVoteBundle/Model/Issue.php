@@ -1,5 +1,5 @@
 <?php
-namespace Mayflower\JiraIssueVoteBundle\Entity;
+namespace Mayflower\JiraIssueVoteBundle\Model;
 
 /**
  * Object which represents an issue of the issue tracker
@@ -61,6 +61,31 @@ class Issue
      * @var \DateTime
      */
     private $created;
+
+    /**
+     * Factory which creates a issue with from the decoded result of the jira api
+     *
+     * @param array $issue
+     * @param string $host
+     *
+     * @return self
+     */
+    public static function fill(array $issue, $host)
+    {
+        $issueDomain = new self;
+
+        $issueDomain->setId((int)$issue['id']);
+        $issueDomain->setSummary($issue['fields']['summary']);
+        $issueDomain->setDescription($issue['fields']['description']);
+        $issueDomain->setViewLink($host . '/browse/' . $issue['key']);
+        $issueDomain->setReporter($issue['fields']['reporter']['name']);
+        $issueDomain->setVoted($issue['fields']['votes']['hasVoted']);
+        $issueDomain->setVoteCount($issue['fields']['votes']['votes']);
+        $issueDomain->setResolution(null === $issue['fields']['resolution']);
+        $issueDomain->setCreated(new \DateTime($issue['fields']['created']));
+
+        return $issueDomain;
+    }
 
     /**
      * Sets the creation date

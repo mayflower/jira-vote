@@ -68,8 +68,8 @@ class RestHandler
         $method = 'GET',
         array $headers = null,
         $requestBody = null,
-        $storeRequestTarget = null)
-    {
+        $storeRequestTarget = null
+    ) {
         $method = strtoupper($method);
         if (!in_array($method, ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE'])) {
             throw new \InvalidArgumentException(sprintf('The methods get, post, put and delete are allowed only!'));
@@ -105,9 +105,7 @@ class RestHandler
             $options['save_to'] = $storeRequestTarget;
         }
 
-        return $client->send(
-            $client->createRequest($method, $this->getUrl($uri), $options)
-        )->json();
+        return $client->send($client->createRequest($method, $this->getUrl($uri), $options))->json();
     }
 
     /**
@@ -115,7 +113,7 @@ class RestHandler
      *
      * @return string
      */
-    public function getJira()
+    public function getJiraHost()
     {
         return $this->jiraHost;
     }

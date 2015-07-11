@@ -6,26 +6,29 @@
                 <h4 class="modal-title" id="settings-label">Custom settings</h4>
             </div>
             <div class="modal-body" ng-controller="settingsController">
+                <div>
+                    <label>Which issues to you want to exclude?</label>
+                </div>
                 <div class="checkbox" >
                     <label>
-                        <input type="checkbox" ng-model="settingVotedType" ng-click="onAddSettings('voted')" ng-init="settingVotedType={{ disable_voted_issues ? 'true' : 'false' }}" />
+                        <input type="checkbox" ng-model="data.voted" />
                         <span>Issues you already voted</span>
                     </label>
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" ng-model="settingReportedType" ng-click="onAddSettings('reported')" ng-init="settingReportedType={{ disable_reported_issues ? 'true' : 'false' }}" />
+                        <input type="checkbox" ng-model="data.reported" />
                         <span>Issues you reported</span>
                     </label>
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" ng-model="settingResolvedType" ng-click="onAddSettings('resolved')" ng-init="settingResolvedType={{ disable_resolved_issues ? 'true' : 'false' }}" />
-                        <span>Resolved issues</span>
+                        <input type="checkbox" ng-model="data.resolved" />
+                        <span>Issues that were closed</span>
                     </label>
                 </div>
-                <div class="message" ng-show="result">
-                    <strong class="text-<% type %>"><% message %></strong>
+                <div class="message">
+                    <button type="button" class="btn btn-primary" ng-click="updateSettings()">Modify settings</button>
                 </div>
             </div>
         </div>

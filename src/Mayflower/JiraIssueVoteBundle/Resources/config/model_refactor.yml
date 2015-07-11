@@ -1,0 +1,16 @@
+services:
+    mayflower_model_manager_issue:
+        class: Mayflower\JiraIssueVoteBundle\Model\IssueManager
+        arguments:
+            - "@mayflower_rest_handler"
+            - "%host%"
+
+    mayflower_model_manager_user:
+        class: Mayflower\JiraIssueVoteBundle\Model\OAuthConsumerManager
+        arguments:
+            - "@mayflower_rest_handler"
+
+    mayflower_model_manager_filter:
+        class: Mayflower\JiraIssueVoteBundle\Model\FilterManager
+        arguments:
+            - "@mayflower_rest_handler"

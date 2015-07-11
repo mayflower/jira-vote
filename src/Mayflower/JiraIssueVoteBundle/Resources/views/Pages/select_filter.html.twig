@@ -27,8 +27,8 @@
                                     <tr>
                                         <td style="text-align: center">
                                             <p><b>{{ filter.name }}</b></p>
-                                            <p><i style="color: #888">Created from {{ filter.owner }}</i></p>
-                                            <p><a href="{{ filter.url }}" target="_blank">View in JIRA for more details</a> </p>
+                                            <p><i style="color: #888">Owned by {{ filter.ownerName }}</i></p>
+                                            <p><a href="{{ filter.viewUrl }}" target="_blank">View in JIRA for more details</a> </p>
                                         </td>
                                         <td style="vertical-align: middle; text-align: center">
                                             <form action="{{ subscribe_issue_collection_url }}" method="post">

@@ -1,5 +1,5 @@
 <?php
-namespace Mayflower\JiraIssueVoteBundle\Entity;
+namespace Mayflower\JiraIssueVoteBundle\Model;
 
 /**
  * Value object which contains the name of the oauth consumer

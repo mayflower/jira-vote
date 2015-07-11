@@ -1,48 +1,23 @@
 'use strict';
 
-jira_vote.controller('settingsController', ['$scope', '$http', function ($scope, $http) {
+jira_vote.controller('settingsController', ['$scope', function ($scope) {
 
-    $scope.onAddSettings = function (option) {
-        /** @ToDo access properties dynamically (didn't work first time) */
-        switch (option) {
-            case 'voted':
-                var type = !$scope.settingVotedType;
+    function fetchLocaleStorageBoolSafe(propertyName) {
+        return localStorage.getItem(propertyName) === 'true';
+    }
 
-                break;
-            case 'reported':
-                var type = !$scope.settingReportedType;
+    $scope.data = {
+        voted:    fetchLocaleStorageBoolSafe('voted'),
+        resolved: fetchLocaleStorageBoolSafe('resolved'),
+        reported: fetchLocaleStorageBoolSafe('reported')
+    };
 
-                break;
-            case 'resolved':
-                var type = !$scope.settingResolvedType;
+    $scope.updateSettings = function () {
+        localStorage.setItem('voted', $scope.data.voted);
+        localStorage.setItem('reported', $scope.data.reported);
+        localStorage.setItem('resolved', $scope.data.resolved);
 
-                break;
-            default:
-                throw new Error('Invalid model name');
-
-                break;
-        }
-
-        var url = '/settings/' + option + '/' + type;
-
-        $scope.message = 'Settings in progress. Page will be reloaded...';
-        $http({method: 'GET', url: url})
-            .success(function () {
-                $scope.result = true;
-                $scope.type = 'success';
-
-                window.setTimeout(
-                    function () {
-                        location.reload();
-                    },
-                    1000
-                );
-            })
-            .error(function () {
-                $scope.result = true;
-                $scope.type = 'danger';
-                $scope.message = 'Error occurred. Please try again';
-            });
+        $('#settingsDialog').modal('hide');
     };
 
 }]);

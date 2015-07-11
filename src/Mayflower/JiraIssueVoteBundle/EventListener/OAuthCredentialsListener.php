@@ -38,6 +38,7 @@ class OAuthCredentialsListener implements EventSubscriberInterface
     {
         $exception  = $event->getException();
         $isInternal = $exception instanceof InvalidTokenException;
+
         if (!$exception instanceof RequestException && !$isInternal) {
             return;
         }
