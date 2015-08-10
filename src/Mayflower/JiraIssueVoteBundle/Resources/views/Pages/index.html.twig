@@ -15,6 +15,7 @@
                 timestamp: {{ issue.creationDateTimestamp }},
                 formattedTimestamp: '{{ issue.formatCreationDate }}',
                 reporter: '{{ issue.reporter }}',
+                key: '{{ issue.issueKey }}',
                 isResolved: {{ issue.resolution ? 'false': 'true' }}
             }{{ loop.index != loop.length ? ',' : '' }}
             {% endfor %}
@@ -74,7 +75,7 @@
             <li ng-repeat="issue in properties.issues | orderBy:orderBy" class="list-group-item issue-list-item" ng-init="orderBy = ''" ng-controller="voteController">
                 <div class="row">
                     <div class="col-md-8">
-                        <p style="vertical-align: middle;"><b style="line-height: 30px;"><% issue.summary %></b></p>
+                        <p style="vertical-align: middle;"><label class="issue-key"><% issue.key %></label><b style="line-height: 30px;"><% issue.summary %></b></p>
                     </div>
                     <div class="col-md-4" style="text-align: right;">
                         <p style="vertical-align: middle;">

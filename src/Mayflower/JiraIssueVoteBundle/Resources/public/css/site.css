@@ -64,6 +64,20 @@ label small {
     margin-top: 20px;
 }
 
+.issue-key {
+    color: #888;
+    padding-right: 10px;
+    font-weight: normal;
+}
+
+.issue-key:before {
+    content: '[';
+}
+
+.issue-key:after {
+    content: ']';
+}
+
 /* movile customizations */
 @media screen and (max-width:974px){
     .vote-box {

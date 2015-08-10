@@ -63,6 +63,11 @@ class Issue
     private $created;
 
     /**
+     * @var string
+     */
+    private $issueKey;
+
+    /**
      * Factory which creates a issue with from the decoded result of the jira api
      *
      * @param array $issue
@@ -83,6 +88,7 @@ class Issue
         $issueDomain->setVoteCount($issue['fields']['votes']['votes']);
         $issueDomain->setResolution(null === $issue['fields']['resolution']);
         $issueDomain->setCreated(new \DateTime($issue['fields']['created']));
+        $issueDomain->setIssueKey($issue['key']);
 
         return $issueDomain;
     }
@@ -341,5 +347,21 @@ class Issue
     public function getVoteCount()
     {
         return $this->voteCount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIssueKey()
+    {
+        return $this->issueKey;
+    }
+
+    /**
+     * @param string $issueKey
+     */
+    public function setIssueKey($issueKey)
+    {
+        $this->issueKey = (string) $issueKey;
     }
 } 
