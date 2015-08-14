@@ -6,12 +6,15 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="user-scable=no, width=device-width, height=device-height, initial-scale=1" />
         {% block styles %}
-            {% stylesheets '@MayflowerJiraIssueVoteBundle/Resources/public/css/*' output='css/dist.css' %}
+            {% stylesheets '@MayflowerJiraIssueVoteBundle/Resources/public/css/*' '@MayflowerJiraIssueVoteBundle/Resources/public/vendor/bootstrap/dist/css/bootstrap.min.css' output='css/dist.css' %}
                 <link rel="stylesheet" type="text/css" media="all" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
         {% block scripts %}
-            {% javascripts '@MayflowerJiraIssueVoteBundle/Resources/public/js/lib/*'
+            {% javascripts '@MayflowerJiraIssueVoteBundle/Resources/public/vendor/angular/angular.min.js'
+                           '@MayflowerJiraIssueVoteBundle/Resources/public/vendor/jquery/dist/jquery.min.js'
+                           '@MayflowerJiraIssueVoteBundle/Resources/public/vendor/bootstrap/dist/js/bootstrap.min.js'
+                           '@MayflowerJiraIssueVoteBundle/Resources/public/vendor/showdown/dist/showdown.min.js'
                            '@MayflowerJiraIssueVoteBundle/Resources/public/js/application/*.js'
                            '@MayflowerJiraIssueVoteBundle/Resources/public/js/application/**/*.js'
                            '@MayflowerJiraIssueVoteBundle/Resources/public/js/application/controller/*/*.js'

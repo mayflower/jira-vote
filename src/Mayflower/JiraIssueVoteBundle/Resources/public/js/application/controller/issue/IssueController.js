@@ -59,6 +59,9 @@
                             function (issue) {
                                 issue.published_date = new Date(issue.created);
 
+                                var converter     = new showdown.Converter();
+                                issue.description = converter.makeHtml(issue.description);
+
                                 return issue;
                             }
                         );

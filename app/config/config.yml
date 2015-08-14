@@ -58,3 +58,15 @@ fos_rest:
     exception:
         messages:
             'Symfony\Component\HttpKernel\Exception\HttpException': true
+
+# Bower
+sp_bower:
+    bundles:
+        MayflowerJiraIssueVoteBundle:
+            json_file:  bower.json
+            config_dir: Resources/config/bower
+            asset_dir:  ../../public/vendor
+            cache:      ../../bower_cache
+    allow_root: true
+    assetic:
+        enabled: false

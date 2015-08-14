@@ -1,0 +1,9 @@
+{
+  "name": "jira-vote",
+  "dependencies": {
+    "jquery": "~2.1",
+    "angular": "~1.3",
+    "bootstrap": "~3.1",
+    "showdown": "~1"
+  }
+}

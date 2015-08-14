@@ -16,3 +16,4 @@
 /app/oauth/private/*
 !app/oauth/private/.gitkeep
 /app/config/parameters.yml
+/src/Mayflower/JiraIssueVoteBundle/Resources/public/vendor/

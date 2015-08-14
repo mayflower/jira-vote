@@ -13,10 +13,10 @@ if (extension_loaded('apc')) {
     $apcLoader->register(true);
 }
 
-$kernel = new AppKernel('prod', false);
+$kernel = new AppKernel('prod', true);
 $kernel->loadClassCache();
-$kernel = new AppCache($kernel);
-
+//$kernel = new AppCache($kernel);
+\Symfony\Component\Debug\Debug::enable();
 Request::enableHttpMethodParameterOverride();
 $request  = Request::createFromGlobals();
 $response = $kernel->handle($request);
