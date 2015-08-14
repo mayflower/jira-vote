@@ -20,11 +20,11 @@
                     return false;
                 }
 
-                if (resolved && issue.resolution) {
+                if (resolved && !issue.resolution) {
                     return false;
                 }
 
-                if (reported && issue.reporter === initialData.currentUser) {
+                if (reported && issue.reporter === $scope.currentUser.name) {
                     return false;
                 }
 
