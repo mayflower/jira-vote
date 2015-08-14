@@ -43,16 +43,19 @@ class IssueManager
      * Loads the latest 50 issue from the jira api
      *
      * @param integer $filterId
+     * @param integer $offset
      *
      * @return Issue[]
      */
-    public function findRecentByFilterId($filterId)
+    public function findRecentByFilterId($filterId, $offset)
     {
-         $issues = $this->handler->executeApiCall(
-             $this->handler->executeApiCall(
-                 sprintf('rest/api/2/filter/%d', $filterId)
-             )['searchUrl']
-         )['issues'];
+        $searchUrl = sprintf(
+            '%s&startAt=%s',
+            $this->handler->executeApiCall(sprintf('rest/api/2/filter/%d', $filterId))['searchUrl'],
+            (int) $offset
+        );
+
+        $issues = $this->handler->executeApiCall($searchUrl)['issues'];
 
         $host = $this->host;
 

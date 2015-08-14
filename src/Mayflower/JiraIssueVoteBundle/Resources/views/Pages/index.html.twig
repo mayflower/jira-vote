@@ -85,7 +85,7 @@
                                         <span ng-show="progressVote">
                                         {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader.gif' %}
                                             <img src="{{ asset_url }}" />
-                                            {% endimage %}
+                                        {% endimage %}
                                         </span> <% currentAction === 'vote' ? 'Vote' : 'Unvote' %>
                                     </button>
                                 <p ng-show="error">
@@ -109,6 +109,15 @@
                                     <span>Reported at <% issue.created %> by <% issue.reporter %></span>
                                 </p>
                             </div>
+                        </div>
+                    </li>
+
+                    <li class="issue-list-item list-item-load-more">
+                        <button class="btn btn-primary btn-block btn-lg" ng-click="loadMore()" ng-show="!loadMoreItems">Load more issues</button>
+                        <div ng-show="loadMoreItems" class="image-center">
+                            {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader.gif' %}
+                                <img src="{{ asset_url }}" />
+                            {% endimage %}
                         </div>
                     </li>
                 </ul>

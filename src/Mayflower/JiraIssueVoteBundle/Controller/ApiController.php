@@ -8,6 +8,7 @@ use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Util\Codes;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -23,13 +24,16 @@ class ApiController extends Controller
     /**
      * Renders the issues as json
      *
+     * @param Request $request
+     *
      * @return array
      *
      * @View()
      */
-    public function loadIssuesAction()
+    public function loadIssuesAction(Request $request)
     {
-        $user = $this->getOAuthUser();
+        $user   = $this->getOAuthUser();
+        $offset = $request->query->get('issue_offset', 0);
 
         /** @var \Mayflower\JiraIssueVoteBundle\Model\IssueManager $issueManager */
         $issueManager = $this->get('mayflower_model_manager_issue');
@@ -45,7 +49,7 @@ class ApiController extends Controller
         }
 
         return [
-            'issues'      => $issueManager->findRecentByFilterId($filterId),
+            'issues'      => $issueManager->findRecentByFilterId($filterId, $offset),
             'currentUser' => $user,
             'filterName'  => $session->get(self::SELECTED_FILTER_NAME),
         ];

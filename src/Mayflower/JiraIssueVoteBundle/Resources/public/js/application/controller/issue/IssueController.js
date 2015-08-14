@@ -5,8 +5,9 @@
     var module = ng.module('jira-vote');
 
     function IssueController($http, $scope, $window) {
-        $scope.issues = [];
-        $scope.ready  = false;
+        $scope.issues        = [];
+        $scope.ready         = false;
+        $scope.loadMoreItems = false;
 
         function filter (issues) {
             var voted    = localStorage.getItem('voted') === 'true';
@@ -34,56 +35,71 @@
             return voteAmount === 1 ? 'Vote' : 'Votes';
         };
 
-        $http.get('/api/issue-data')
-            .then(
-                function (response) {
-                    var data = response.data.issues;
+        $scope.loadMore = function () {
+            $scope.receiveIssues($scope.issues.length, true);
+        };
 
-                    $scope.issues      = filter(data);
-                    $scope.filterName  = response.data.filterName;
-                    $scope.currentUser = response.data.currentUser;
-                    $scope.ready       = true;
+        $scope.receiveIssues = function (offset, append) {
+            $scope.loadMoreItems = true;
 
-                    $scope.issues.map(
-                        function (issue) {
-                            issue.published_date = new Date(issue.created);
+            $http.get('/api/issue-data?issue_offset=' + parseInt(offset))
+                .then(
+                    function (response) {
+                        $scope.loadMoreItems = false;
+                        var data             = response.data.issues;
+                        var source           = append ? $scope.issues : [];
 
-                            return issue;
-                        }
-                    );
+                        $scope.issues      = filter(source.concat(data));
+                        $scope.filterName  = response.data.filterName;
+                        $scope.currentUser = response.data.currentUser;
+                        $scope.ready       = true;
 
-                    $scope.$watchGroup(
-                        [
-                            function () {
-                                return localStorage.getItem('voted');
-                            },
-                            function () {
-                                return localStorage.getItem('resolved');
-                            },
-                            function () {
-                                return localStorage.getItem('reported');
+                        $scope.issues.map(
+                            function (issue) {
+                                issue.published_date = new Date(issue.created);
+
+                                return issue;
                             }
-                        ],
-                        function () {
-                            var issues    = $scope.issues;
-                            $scope.issues = filter(data);
-                        }
-                    );
-                },
-                function (response) {
-                    var hostname = window.location.hostname;
+                        );
 
-                    switch (response.status) {
-                        case 401:
-                            $window.location.href = '/unauthorized';
-                            break;
-                        case 403:
-                            $window.location.href = '/filter/select';
-                            break;
+                        if (!append) {
+                            $scope.$watchGroup(
+                                [
+                                    function () {
+                                        return localStorage.getItem('voted');
+                                    },
+                                    function () {
+                                        return localStorage.getItem('resolved');
+                                    },
+                                    function () {
+                                        return localStorage.getItem('reported');
+                                    }
+                                ],
+                                function () {
+                                    var issues    = $scope.issues;
+                                    $scope.issues = filter(data);
+                                }
+                            );
+                        }
+                    },
+                    function (response) {
+                        $scope.loadMoreItems = false;
+                        var hostname         = window.location.hostname;
+
+                        switch (response.status) {
+                            case 401:
+                                $window.location.href = '/unauthorized';
+                                break;
+                            case 403:
+                                $window.location.href = '/filter/select';
+                                break;
+                        }
                     }
-                }
-            )
-        ;
+                )
+            ;
+        };
+
+        $scope.receiveIssues(0, false);
     }
 
     module.controller('IssueController', IssueController);
