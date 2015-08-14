@@ -103,7 +103,7 @@
                                 </button>
                             </p>
                             <div ng-show="showDetails">
-                                <span ng-show="issue.description" ng-bind-html="issue.description | sanitize"></span>
+                                <span ng-show="issue.description" ng-bind-html="issue.description | sanitize" class="issue-description"></span>
                                 <span ng-hide="issue.description" class="issue-generated-info-text"><span>No description available</span></span>
                                 <p class="issue-generated-info-text">
                                     <span>Reported at <% issue.created %> by <% issue.reporter %></span>
