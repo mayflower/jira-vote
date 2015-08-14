@@ -13,7 +13,9 @@ class AppKernel extends Kernel
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Mayflower\JiraIssueVoteBundle\MayflowerJiraIssueVoteBundle(),
-            new Sensio\Bundle\DistributionBundle\SensioDistributionBundle()
+            new Sensio\Bundle\DistributionBundle\SensioDistributionBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

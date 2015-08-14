@@ -6,14 +6,17 @@
     },
     "require": {
         "php": ">=5.5",
-        "symfony/symfony": "~2.6",
+        "symfony/symfony": "~2.7",
         "sensio/distribution-bundle": "~3.0",
         "sensio/generator-bundle": "~2.3",
         "incenteev/composer-parameter-handler": "~2.1",
         "symfony/monolog-bundle": "~2.6",
         "symfony/assetic-bundle": "~2.3",
         "guzzlehttp/guzzle": "~5.2",
-        "guzzlehttp/oauth-subscriber": "~0.2"
+        "guzzlehttp/oauth-subscriber": "~0.2",
+        "friendsofsymfony/rest-bundle": "~1.7",
+        "jms/serializer-bundle": "~0.13",
+        "sensio/framework-extra-bundle": "~3"
     },
     "require-dev": {
         "phpunit/phpunit": "~4"

@@ -15,7 +15,8 @@ if (extension_loaded('apc')) {
 
 $kernel = new AppKernel('prod', true);
 $kernel->loadClassCache();
-$kernel = new AppCache($kernel);
+\Symfony\Component\Debug\Debug::enable();
+//$kernel = new AppCache($kernel);
 
 Request::enableHttpMethodParameterOverride();
 $request  = Request::createFromGlobals();

@@ -40,3 +40,21 @@ mayflower_jira_issue_vote:
     consumer_secret: %private_key%
     oauth_host:      %jira_host%
     client_host:     http://jira-vote.dev
+
+# Rest api configuration
+fos_rest:
+    body_listener:          true
+    format_listener:        true
+    param_fetcher_listener: true
+    view:
+        view_response_listener: force
+        failed_validation:      HTTP_BAD_REQUEST
+        default_engine:         twig
+        formats:
+            json:  true
+    format_listener:
+        rules:
+            - { path: ^/api, priorities: [html, json], fallback_format: ~, prefer_extension: false }
+    exception:
+        messages:
+            'Symfony\Component\HttpKernel\Exception\HttpException': true

@@ -2,12 +2,14 @@
 
 namespace Mayflower\JiraIssueVoteBundle\EventListener;
 
+use FOS\RestBundle\Util\Codes;
 use GuzzleHttp\Exception\RequestException;
 use Mayflower\JiraIssueVoteBundle\Controller\AuthorizeController;
 use Mayflower\JiraIssueVoteBundle\Exception\InvalidTokenException;
 use Mayflower\JiraIssueVoteBundle\Jira\TokenFetcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -48,18 +50,25 @@ class OAuthCredentialsListener implements EventSubscriberInterface
             || !$event->getRequest()->getSession()->has(TokenFetcher::OAUTH_TOKEN)
             || $isInternal
         ) {
-            $request = $event->getRequest()->duplicate();
-            $request->attributes->set('_controller', 'MayflowerJiraIssueVoteBundle:Authorize:invalidateTokens');
+            if ($event->getRequest()->isXmlHttpRequest()) {
+                // clear manually on xhr errors
+                $event->getRequest()->getSession()->clear();
 
-            $request->attributes->add(
-                [
-                    'type'       => AuthorizeController::TOKEN_WARNING,
-                    'error_text' => 'You were logged out automatically. ' .
-                        'In order to continue using Jira Vote, please re-login.'
-                ]
-            );
+                throw new HttpException(Codes::HTTP_UNAUTHORIZED, 'You are currently not authorized. Please login again!');
+            } else {
+                $request = $event->getRequest()->duplicate();
+                $request->attributes->set('_controller', 'MayflowerJiraIssueVoteBundle:Authorize:invalidateTokens');
 
-            $event->setResponse($event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST));
+                $request->attributes->add(
+                    [
+                        'type'       => AuthorizeController::TOKEN_WARNING,
+                        'error_text' => 'You were logged out automatically. ' .
+                            'In order to continue using Jira Vote, please re-login.'
+                    ]
+                );
+
+                $event->setResponse($event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST));
+            }
         }
     }
 }

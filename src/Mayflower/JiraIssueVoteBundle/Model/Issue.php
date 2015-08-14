@@ -87,7 +87,7 @@ class Issue
         $issueDomain->setVoted($issue['fields']['votes']['hasVoted']);
         $issueDomain->setVoteCount($issue['fields']['votes']['votes']);
         $issueDomain->setResolution(null === $issue['fields']['resolution']);
-        $issueDomain->setCreated(new \DateTime($issue['fields']['created']));
+        $issueDomain->setCreated((new \DateTime($issue['fields']['created']))->format('m/d/Y h:i A'));
         $issueDomain->setIssueKey($issue['key']);
 
         return $issueDomain;
@@ -96,13 +96,13 @@ class Issue
     /**
      * Sets the creation date
      *
-     * @param \DateTime $created
+     * @param string $created
      *
      * @return void
      *
      * @api
      */
-    public function setCreated(\DateTime $created)
+    public function setCreated($created)
     {
         $this->created = $created;
     }
@@ -110,27 +110,13 @@ class Issue
     /**
      * Returns the creation date
      *
-     * @return \DateTime
+     * @return string
      *
      * @api
      */
     public function getCreated()
     {
         return $this->created;
-    }
-
-    /**
-     * Formats the creation date to a readable date output
-     *
-     * @param string $scheme Scheme to transform
-     *
-     * @return string
-     *
-     * @api
-     */
-    public function formatCreationDate($scheme = 'd.m.Y H:i')
-    {
-        return $this->created->format($scheme);
     }
 
     /**

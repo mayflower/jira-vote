@@ -1,5 +1,7 @@
 mayflower_jira_issue_vote:
-    resource: "@MayflowerJiraIssueVoteBundle/Resources/config/routing.yml"
+    resource: "@MayflowerJiraIssueVoteBundle/Resources/config/routing_refactor.yml"
     prefix:   /
 
-
+mayflower_jira_issue_vote_rest:
+    resource: "@MayflowerJiraIssueVoteBundle/Resources/config/routing_rest.yml"
+    prefix:   /api

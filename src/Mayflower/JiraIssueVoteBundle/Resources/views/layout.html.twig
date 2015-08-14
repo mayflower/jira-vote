@@ -1,4 +1,4 @@
-{#{% spaceless %}#}
+{% spaceless %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr" ng-app="jira-vote">
     <head>
@@ -6,13 +6,17 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="user-scable=no, width=device-width, height=device-height, initial-scale=1" />
         {% block styles %}
-            {% stylesheets '@MayflowerJiraIssueVoteBundle/Resources/public/css/*' %}
+            {% stylesheets '@MayflowerJiraIssueVoteBundle/Resources/public/css/*' output='css/dist.css' %}
                 <link rel="stylesheet" type="text/css" media="all" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
         {% block scripts %}
             {% javascripts '@MayflowerJiraIssueVoteBundle/Resources/public/js/lib/*'
-                           '@MayflowerJiraIssueVoteBundle/Resources/public/js/*' %}
+                           '@MayflowerJiraIssueVoteBundle/Resources/public/js/application/*.js'
+                           '@MayflowerJiraIssueVoteBundle/Resources/public/js/application/**/*.js'
+                           '@MayflowerJiraIssueVoteBundle/Resources/public/js/application/controller/*/*.js'
+                           '@MayflowerJiraIssueVoteBundle/Resources/public/js/application/filter/*/*.js'
+                           output='js/dist.js' %}
             <script type="text/javascript" src="{{ asset_url }}"></script>
             {% endjavascripts %}
         {% endblock %}
@@ -23,4 +27,4 @@
         {% block body %}{% endblock %}
     </body>
 </html>
-{#{% endspaceless %}#}
+{% endspaceless %}

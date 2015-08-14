@@ -100,34 +100,10 @@ jira_vote.controller('voteController', ['$scope', '$http', function ($scope, $ht
         );
 
     }])
-    .filter('sanitize', ['$sce', function($sce) {
-        return function(htmlCode){
-            return $sce.trustAsHtml(htmlCode);
-        }
-    }])
+
     .factory('excludeItemFilter', function () {
         return {
-            filter: function (issues) {
-                var voted    = localStorage.getItem('voted') === 'true';
-                var resolved = localStorage.getItem('resolved') === 'true';
-                var reported = localStorage.getItem('reported') === 'true';
-
-                return issues.filter(function (issue) {
-                    if (voted && issue.userVoted) {
-                        return false;
-                    }
-
-                    if (resolved && issue.isResolved) {
-                        return false;
-                    }
-
-                    if (reported && issue.reporter === initialData.currentUser) {
-                        return false;
-                    }
-
-                    return true;
-                });
-            }
+            filter: {}
         };
     })
 ;

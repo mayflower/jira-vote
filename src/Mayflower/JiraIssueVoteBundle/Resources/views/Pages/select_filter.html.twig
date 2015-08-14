@@ -3,51 +3,41 @@
 <div class="row" style="margin-top: 20px">
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
-            <div class="panel-body">
+            <div class="panel-body" ng-controller="FilterSelectionController">
                 <h4>What do you want to vote for?</h4>
 
-                {% if invalidFilterId|default(false) == true %}
-                    <div class="alert alert-danger">
-                        <p>The given filter is invalid. Please contact an administrator!</p>
-                    </div>
-                {% endif %}
+                <div class="alert alert-danger" ng-show="gotInvalidFilter">
+                    <p>The given filter is invalid. Please contact an administrator!</p>
+                </div>
 
-                {% if filters is not empty %}
-                    <div class="table-responsive row">
-                        <div class="col-md-12">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 50%; text-align: center;">Information</th>
-                                        <th style="width: 50%; text-align: center;">Select</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for filter in filters %}
-                                    <tr>
-                                        <td style="text-align: center">
-                                            <p><b>{{ filter.name }}</b></p>
-                                            <p><i style="color: #888">Owned by {{ filter.ownerName }}</i></p>
-                                            <p><a href="{{ filter.viewUrl }}" target="_blank">View in JIRA for more details</a> </p>
-                                        </td>
-                                        <td style="vertical-align: middle; text-align: center">
-                                            <form action="{{ subscribe_issue_collection_url }}" method="post">
-                                                <input type="hidden" name="filter_id" value="{{ filter.id }}" />
-                                                <input type="hidden" name="filter_name" value="{{ filter.name }}" />
-                                                <button type="submit" name="submit" class="btn btn-primary" style="margin-top: 0px;">Show issues</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="alert alert-info" ng-show="filters.length === 0">
+                    <p>No favourite filters selected. Please add some.</p>
+                </div>
+
+                <div class="table-responsive row" ng-show="filters.length > 0">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50%; text-align: center;">Information</th>
+                                    <th style="width: 50%; text-align: center;">Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="filter in filters">
+                                    <td class="favourite-filter-table-cell">
+                                        <p><b><% filter.name %></b></p>
+                                        <p><i style="color: #888">Owned by <% filter.owner_name %></i></p>
+                                        <p><a href="<% filter.view_url %>" target="_blank">View in JIRA for more details</a> </p>
+                                    </td>
+                                    <td class="favourite-filter-table-cell">
+                                        <button type="button" class="btn btn-primary" ng-click="persistFilter(filter.id)">Show issues</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                {% else %}
-                    <div class="alert alert-warning">
-                        <p>You have no favourite issues yet. Please add some!</p>
-                    </div>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>

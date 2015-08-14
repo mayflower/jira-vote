@@ -78,6 +78,17 @@ label small {
     content: ']';
 }
 
+.favourite-filter-table-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.image-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* movile customizations */
 @media screen and (max-width:974px){
     .vote-box {
