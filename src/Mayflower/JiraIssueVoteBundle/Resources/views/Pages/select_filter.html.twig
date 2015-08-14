@@ -1,7 +1,6 @@
 {% extends 'MayflowerJiraIssueVoteBundle::layout.html.twig' %}
 {% block body %}
-<div class="row" style="margin-top: 20px">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="page-block">
         <div class="panel panel-default">
             <div class="panel-body" ng-controller="FilterSelectionController">
                 <h4>What do you want to vote for?</h4>
@@ -18,22 +17,22 @@
                     <div class="col-md-12">
                         <table class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th style="width: 50%; text-align: center;">Information</th>
-                                    <th style="width: 50%; text-align: center;">Select</th>
-                                </tr>
+                            <tr>
+                                <th style="width: 50%; text-align: center;">Information</th>
+                                <th style="width: 50%; text-align: center;">Select</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="filter in filters">
-                                    <td class="favourite-filter-table-cell">
-                                        <p><b><% filter.name %></b></p>
-                                        <p><i style="color: #888">Owned by <% filter.owner_name %></i></p>
-                                        <p><a href="<% filter.view_url %>" target="_blank">View in JIRA for more details</a> </p>
-                                    </td>
-                                    <td class="favourite-filter-table-cell">
-                                        <button type="button" class="btn btn-primary" ng-click="persistFilter(filter.id)">Show issues</button>
-                                    </td>
-                                </tr>
+                            <tr ng-repeat="filter in filters">
+                                <td class="favourite-filter-table-cell">
+                                    <p><b><% filter.name %></b></p>
+                                    <p><i style="color: #888">Owned by <% filter.owner_name %></i></p>
+                                    <p><a href="<% filter.view_url %>" target="_blank">View in JIRA for more details</a> </p>
+                                </td>
+                                <td class="favourite-filter-table-cell">
+                                    <button type="button" class="btn btn-primary" ng-click="persistFilter(filter.id)">Show issues</button>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -41,6 +40,5 @@
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 {% block title %}Select filter{% endblock %}

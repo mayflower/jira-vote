@@ -99,6 +99,13 @@ label small {
     margin-top: 30px;
 }
 
+.page-block {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    width: 83.333333333%
+}
+
 /* movile customizations */
 @media screen and (max-width:974px){
     .vote-box {

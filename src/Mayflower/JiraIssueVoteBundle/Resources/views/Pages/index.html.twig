@@ -11,8 +11,8 @@
         {% include '@MayflowerJiraIssueVote/Pages/Modal/settings.html.twig' %}
 
         <div class="row" style="margin-top: 20px;">
-            <div class="col-md-8 col-md-offset-2">
-                <div ng-show="!ready">
+            <div class="page-block" style="width: 66.666666666%">
+                    <div ng-show="!ready">
                     {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader-big-blue.gif' %}
                     <img src="{{ asset_url }}" class="image-center" />
                     {% endimage %}
