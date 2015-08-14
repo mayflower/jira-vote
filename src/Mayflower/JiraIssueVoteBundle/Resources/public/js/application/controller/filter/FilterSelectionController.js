@@ -1,5 +1,7 @@
 (function (ng) {
 
+    'use strict';
+
     function FilterSelectionController($http, $scope, $window) {
         $scope.gotInvalidFilter = false;
 

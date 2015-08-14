@@ -1,5 +1,7 @@
 (function (ng) {
 
+    'use strict';
+
     function VoterController ($scope, $http) {
         var buttonData = {
             'vote': {

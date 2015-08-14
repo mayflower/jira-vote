@@ -1,5 +1,7 @@
 (function () {
 
+    'use strict';
+
     var storageKeys = {
         filter: {
             voted:    'voted',
