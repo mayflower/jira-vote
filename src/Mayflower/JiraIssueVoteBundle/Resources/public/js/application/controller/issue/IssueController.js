@@ -8,6 +8,7 @@
         $scope.issues        = [];
         $scope.ready         = false;
         $scope.loadMoreItems = false;
+        $scope.disableMore   = false;
 
         function filter (issues) {
             var voted    = localStorage.getItem('voted') === 'true';
@@ -61,6 +62,10 @@
                                 return issue;
                             }
                         );
+
+                        if (data.length < 50) {
+                            $scope.disableMore = true;
+                        }
 
                         if (!append) {
                             $scope.$watchGroup(

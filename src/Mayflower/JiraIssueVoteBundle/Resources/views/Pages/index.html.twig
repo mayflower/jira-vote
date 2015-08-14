@@ -112,8 +112,8 @@
                         </div>
                     </li>
 
-                    <li class="issue-list-item list-item-load-more">
-                        <button class="btn btn-primary btn-block btn-lg" ng-click="loadMore()" ng-show="!loadMoreItems">Load more issues</button>
+                    <li class="list-group-item issue-list-item list-item-load-more">
+                        <button class="btn btn-primary btn-block btn-lg" ng-disabled="disableMore" ng-click="loadMore()" ng-show="!loadMoreItems">Load more issues</button>
                         <div ng-show="loadMoreItems" class="image-center load-more-loading-spinner">
                             {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader.gif' %}
                                 <img src="{{ asset_url }}" />
