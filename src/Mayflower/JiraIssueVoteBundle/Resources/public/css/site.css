@@ -92,6 +92,11 @@ label small {
 .list-item-load-more {
     text-align: center;
     padding: 20px;
+    min-height: 115px;
+}
+
+.load-more-loading-spinner {
+    margin-top: 30px;
 }
 
 /* movile customizations */
