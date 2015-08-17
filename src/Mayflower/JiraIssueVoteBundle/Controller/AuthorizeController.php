@@ -88,7 +88,7 @@ class AuthorizeController extends Controller
             );
         }
 
-        return $this->redirect($this->generateUrl('ma27_jira_issue_vote_homepage'));
+        return $this->redirect($this->generateUrl('ma27_jira_issue_vote_select_filter'));
     }
 
     /**
