@@ -11,6 +11,8 @@
         {% include '@MayflowerJiraIssueVote/Pages/Modal/settings.html.twig' %}
 
         <div class="row" style="margin-top: 20px;">
+            <a target="_top" href="#" class="btn btn-info btn-jumper btn-lg" ng-show="ready">Jump to the top!</a>
+
             <div class="page-block" style="width: 66.666666666%">
                     <div ng-show="!ready">
                     {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader-big-blue.gif' %}
