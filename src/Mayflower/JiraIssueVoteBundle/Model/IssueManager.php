@@ -44,18 +44,18 @@ class IssueManager
      *
      * @param integer $filterId
      * @param integer $offset
+     * @param string  $type
      *
      * @return Issue[]
      */
-    public function findRecentByFilterId($filterId, $offset)
+    public function findRecent($filterId, $offset, $type)
     {
-        $searchUrl = sprintf(
-            '%s&startAt=%s',
-            $this->handler->executeApiCall(sprintf('rest/api/2/filter/%d', $filterId))['searchUrl'],
-            (int) $offset
-        );
+        $url = $type === 'filters'
+            ? sprintf('%s&startAt=%s', $this->handler->executeApiCall(sprintf('rest/api/2/filter/%d', $filterId))['searchUrl'], (int) $offset)
+            : sprintf('rest/api/2/search?jql=project="%s"&startAt=%d', $filterId, (int) $offset)
+        ;
 
-        $issues = $this->handler->executeApiCall($searchUrl)['issues'];
+        $issues = $this->handler->executeApiCall($url)['issues'];
 
         $host = $this->host;
 

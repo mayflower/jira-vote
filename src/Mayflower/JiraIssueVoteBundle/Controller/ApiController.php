@@ -20,6 +20,7 @@ class ApiController extends Controller
 {
     const SELECTED_FILTER_ID   = 'issue.filter.current';
     const SELECTED_FILTER_NAME = 'issue.filter.current.name';
+    const SELECTED_FILTER_TYPE = 'issue.filter.current.type';
 
     /**
      * Renders the issues as json
@@ -49,7 +50,7 @@ class ApiController extends Controller
         }
 
         return [
-            'issues'      => $issueManager->findRecentByFilterId($filterId, $offset),
+            'issues'      => $issueManager->findRecent($filterId, $offset, $request->getSession()->get(self::SELECTED_FILTER_TYPE)),
             'currentUser' => $user,
             'filterName'  => $session->get(self::SELECTED_FILTER_NAME),
         ];
@@ -58,32 +59,35 @@ class ApiController extends Controller
     /**
      * Loads all favourite filters of a specific user
      *
-     * @return \Mayflower\JiraIssueVoteBundle\Model\Filter[]
+     * @param string $type
+     *
+     * @return \Mayflower\JiraIssueVoteBundle\Model\IssueSource[]
      *
      * @View()
      */
-    public function loadFiltersAction()
+    public function loadIssueSourceAction($type)
     {
-        /** @var \Mayflower\JiraIssueVoteBundle\Model\FilterManager $filterManager */
-        $filterManager = $this->get('mayflower_model_manager_filter');
+        /** @var \Mayflower\JiraIssueVoteBundle\Model\IssueSourceManager $sourceManager */
+        $sourceManager = $this->get('mayflower_model_manager_filter');
 
-        return $filterManager->findFavouriteFilters();
+        return $sourceManager->findIssueSourceByType($type);
     }
 
     /**
      * Selects a single resource
      *
+     * @param string       $type
      * @param ParamFetcher $paramFetcher
      *
-     * @RequestParam(name="filterId", requirements="\d+", description="Id of the filter to load")
+     * @RequestParam(name="filterId", requirements="[A-z0-9]+", description="Id of the filter to load")
      */
-    public function selectFilterAction(ParamFetcher $paramFetcher)
+    public function storeFavouriteFilterAction($type, ParamFetcher $paramFetcher)
     {
         $filterId = $paramFetcher->get('filterId');
 
-        /** @var \Mayflower\JiraIssueVoteBundle\Model\FilterManager $filterManager */
+        /** @var \Mayflower\JiraIssueVoteBundle\Model\IssueSourceManager $filterManager */
         $filterManager = $this->get('mayflower_model_manager_filter');
-        $allFilters    = $filterManager->findFavouriteFilters();
+        $allFilters    = $filterManager->findIssueSourceByType($type);
 
         foreach ($allFilters as $filter) {
             if ($filterId !== $filter->getId()) {
@@ -95,6 +99,7 @@ class ApiController extends Controller
 
             $session->set(self::SELECTED_FILTER_ID, $filter->getId());
             $session->set(self::SELECTED_FILTER_NAME, $filter->getName());
+            $session->set(self::SELECTED_FILTER_TYPE, $type);
 
             return;
         }

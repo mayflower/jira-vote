@@ -4,11 +4,11 @@ mayflower_issues:
     defaults: { _controller: MayflowerJiraIssueVoteBundle:Api:loadIssues, _format: json }
 
 mayflower_filters:
-    path:     '/filters'
+    path:     '/source/{type}'
     methods:  ['GET']
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Api:loadFilters, _format: json }
+    defaults: { _controller: MayflowerJiraIssueVoteBundle:Api:loadIssueSource, _format: json }
 
 mayflower_select_filters:
-    path:     '/filters'
+    path:     '/source/{type}'
     methods:  ['POST']
-    defaults: { _controller: MayflowerJiraIssueVoteBundle:Api:selectFilter, _format: json }
+    defaults: { _controller: MayflowerJiraIssueVoteBundle:Api:storeFavouriteFilter, _format: json }

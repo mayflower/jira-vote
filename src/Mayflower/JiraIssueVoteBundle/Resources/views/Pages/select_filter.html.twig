@@ -5,36 +5,62 @@
             <div class="panel-body" ng-controller="FilterSelectionController">
                 <h4>What do you want to vote for?</h4>
 
-                <div class="alert alert-danger" ng-show="gotInvalidFilter">
-                    <p>The given filter is invalid. Please contact an administrator!</p>
+                <div ng-hide="selectedVoteStrategy">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <form role="form">
+                                <div class="form-group">
+                                    <select class="form-control" ng-model="strategyType">
+                                        <option value="" style="display: none">Select issue type</option>
+                                        <option value="filters">Find favourite filters</option>
+                                        <option value="projects">Find jira projects</option>
+                                    </select>
+
+                                    <button class="btn btn-primary" ng-hide="generateSourceList" ng-click="getSourceList()">Select issue source</button>
+                                    <div ng-show="generateSourceList">
+                                        {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader.gif' %}
+                                            <img src="{{ asset_url }}" style="margin-top: 20px;" />
+                                        {% endimage %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="alert alert-info" ng-show="filters.length === 0">
-                    <p>No favourite filters selected. Please add some.</p>
-                </div>
+                <div ng-show="selectedVoteStrategy">
+                    <button class="btn btn-info btn-sm" style="margin-bottom: 15px;" ng-click="resetSourceConfig()">Load other kind of issue source</button>
 
-                <div class="table-responsive row" ng-show="filters.length > 0">
-                    <div class="col-md-12">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th style="width: 50%; text-align: center;">Information</th>
-                                <th style="width: 50%; text-align: center;">Select</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="filter in filters">
-                                <td class="favourite-filter-table-cell">
-                                    <p><b><% filter.name %></b></p>
-                                    <p><i style="color: #888">Owned by <% filter.owner_name %></i></p>
-                                    <p><a href="<% filter.view_url %>" target="_blank">View in JIRA for more details</a> </p>
-                                </td>
-                                <td class="favourite-filter-table-cell">
-                                    <button type="button" class="btn btn-primary" ng-click="persistFilter(filter.id)">Show issues</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="alert alert-danger" ng-show="gotInvalidFilter">
+                        <p>The given filter is invalid. Please contact an administrator!</p>
+                    </div>
+
+                    <div class="alert alert-warning" ng-show="filters.length === 0">
+                        <p>No project or filter selected. Check whether you are allowed to have access to jira projects or whether you have favourite issue filters.</p>
+                    </div>
+
+                    <div class="table-responsive row" ng-show="filters.length > 0">
+                        <div class="col-md-12">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th style="width: 50%; text-align: center;">Information</th>
+                                    <th style="width: 50%; text-align: center;">Select</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="filter in filters">
+                                    <td class="favourite-filter-table-cell">
+                                        <p><b><% filter.name %></b></p>
+                                        <p><a href="<% filter.view_url %>" target="_blank">View in JIRA for more details</a> </p>
+                                    </td>
+                                    <td class="favourite-filter-table-cell">
+                                        <button type="button" class="btn btn-primary" ng-click="persistFilter(filter.id)">Show issues</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

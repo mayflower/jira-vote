@@ -2,32 +2,23 @@
 namespace Mayflower\JiraIssueVoteBundle\Model;
 
 /**
- * Objects which represents an issue filter
+ * Objects which represents an issue filter or jira project.
  *
  * @author Maximilian Bosch <mtb2000@live.de>
  */
-class Filter
+class IssueSource
 {
     /**
-     * Filter id
      * @var string|integer
      */
     private $id;
 
     /**
-     * Filter name
      * @var string
      */
     private $name;
 
     /**
-     * Name of the filter owner
-     * @var string
-     */
-    private $ownerName;
-
-    /**
-     * Url of the filter
      * @var string
      */
     private $viewUrl;
@@ -37,7 +28,7 @@ class Filter
      *
      * @param array $params
      *
-     * @return Filter
+     * @return IssueSource
      */
     public static function fill(array $params)
     {
@@ -45,7 +36,6 @@ class Filter
 
         $model->setId($params['id']);
         $model->setName($params['name']);
-        $model->setOwnerName($params['owner']['name']);
         $model->setViewUrl($params['viewUrl']);
 
         return $model;
@@ -62,7 +52,7 @@ class Filter
      */
     public function setId($id)
     {
-        $this->id = (int)$id;
+        $this->id = $id;
     }
 
     /**
@@ -104,30 +94,6 @@ class Filter
     }
 
     /**
-     * Sets the name of the filter-owner
-     *
-     * @param string $ownerName Name of the owner
-     *
-     * @api
-     */
-    public function setOwnerName($ownerName)
-    {
-        $this->ownerName = (string)$ownerName;
-    }
-
-    /**
-     * Returns the name of the owner
-     *
-     * @return string
-     *
-     * @api
-     */
-    public function getOwnerName()
-    {
-        return $this->ownerName;
-    }
-
-    /**
      * Sets the view url of the filter
      *
      * @param string $viewUrl View url of the filter
@@ -163,10 +129,9 @@ class Filter
     public function toArray()
     {
         return array(
-            'id'    => $this->getId(),
-            'owner' => $this->getOwnerName(),
-            'name'  => $this->getName(),
-            'url'   => $this->getViewUrl()
+            'id'   => $this->getId(),
+            'name' => $this->getName(),
+            'url'  => $this->getViewUrl()
         );
     }
-} 
+}

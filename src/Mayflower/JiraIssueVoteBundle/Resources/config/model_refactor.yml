@@ -11,6 +11,7 @@ services:
             - "@mayflower_rest_handler"
 
     mayflower_model_manager_filter:
-        class: Mayflower\JiraIssueVoteBundle\Model\FilterManager
+        class: Mayflower\JiraIssueVoteBundle\Model\IssueSourceManager
         arguments:
             - "@mayflower_rest_handler"
+            - "%host%"
