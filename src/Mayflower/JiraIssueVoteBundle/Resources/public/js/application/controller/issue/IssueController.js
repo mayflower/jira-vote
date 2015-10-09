@@ -11,6 +11,18 @@
         $scope.disableMore   = false;
         $scope.showButton    = false;
 
+        if (localStorage.getItem('voted') === null) {
+            localStorage.setItem('voted', 'true');
+        }
+
+        if (localStorage.getItem('resolved') === null) {
+            localStorage.setItem('resolved', 'true');
+        }
+
+        if (localStorage.getItem('reported') === null) {
+            localStorage.setItem('reported', 'true');
+        }
+
         $window.onscroll = function () {
             var scrollPosition = document.body.scrollTop || document.documentElement.scrollTop;
 
@@ -58,9 +70,9 @@
                         var data             = response.data.issues;
                         var source           = append ? $scope.issues : [];
 
-                        $scope.issues      = filter(source.concat(data));
                         $scope.filterName  = response.data.filterName;
                         $scope.currentUser = response.data.currentUser;
+                        $scope.issues      = filter(source.concat(data));
                         $scope.ready       = true;
 
                         $scope.issues.map(
