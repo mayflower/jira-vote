@@ -9,6 +9,14 @@
         $scope.ready         = false;
         $scope.loadMoreItems = false;
         $scope.disableMore   = false;
+        $scope.showButton    = false;
+
+        $window.onscroll = function () {
+            var scrollPosition = document.body.scrollTop || document.documentElement.scrollTop;
+
+            $scope.showButton = scrollPosition > 0;
+            $scope.$apply();
+        };
 
         function filter (issues) {
             var voted    = localStorage.getItem('voted') === 'true';
