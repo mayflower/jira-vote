@@ -88,7 +88,7 @@ class Issue
         $issueDomain->setSummary($issue['fields']['summary']);
         $issueDomain->setDescription($issue['fields']['description']);
         $issueDomain->setViewLink($host . '/browse/' . $issue['key']);
-        $issueDomain->setReporter($issue['fields']['reporter']['name']);
+        $issueDomain->setReporter($issue['fields']['reporter']['displayName']);
         $issueDomain->setVoted($issue['fields']['votes']['hasVoted']);
         $issueDomain->setVoteCount($issue['fields']['votes']['votes']);
         $issueDomain->setResolution(null === $issue['fields']['resolution']);
