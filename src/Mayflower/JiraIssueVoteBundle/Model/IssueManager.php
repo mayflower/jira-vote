@@ -55,6 +55,7 @@ class IssueManager
             : sprintf('rest/api/2/search?jql=project="%s"&startAt=%d', $filterId, (int) $offset)
         ;
 
+        $url   .= '&expand=issuetype';
         $issues = $this->handler->executeApiCall($url)['issues'];
 
         $host = $this->host;

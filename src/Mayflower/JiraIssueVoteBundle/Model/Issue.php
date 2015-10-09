@@ -65,6 +65,11 @@ class Issue
     /**
      * @var string
      */
+    private $issueType = 'Story';
+
+    /**
+     * @var string
+     */
     private $issueKey;
 
     /**
@@ -89,6 +94,7 @@ class Issue
         $issueDomain->setResolution(null === $issue['fields']['resolution']);
         $issueDomain->setCreated((new \DateTime($issue['fields']['created']))->format('m/d/Y h:i A'));
         $issueDomain->setIssueKey($issue['key']);
+        $issueDomain->setIssueType($issue['fields']['issuetype']['name']);
 
         return $issueDomain;
     }
@@ -349,5 +355,21 @@ class Issue
     public function setIssueKey($issueKey)
     {
         $this->issueKey = (string) $issueKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIssueType()
+    {
+        return $this->issueType;
+    }
+
+    /**
+     * @param string $issueType
+     */
+    public function setIssueType($issueType)
+    {
+        $this->issueType = $issueType;
     }
 } 
