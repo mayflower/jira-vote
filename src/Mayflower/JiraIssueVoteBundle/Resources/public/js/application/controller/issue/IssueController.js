@@ -25,6 +25,10 @@
             localStorage.setItem('reported', 'true');
         }
 
+        if (localStorage.getItem('subtask') === null) {
+            localStorage.setItem('subtask', 'true');
+        }
+
         $window.onscroll = function () {
             var scrollPosition = document.body.scrollTop || document.documentElement.scrollTop;
 
@@ -38,6 +42,7 @@
             var reported   = localStorage.getItem('reported') === 'true';
             var issueType  = localStorage.getItem('issueType');
             var issueState = localStorage.getItem('issueState');
+            var subTask    = localStorage.getItem('subTask') === 'true';
 
             return issues.filter(function (issue) {
                 if (voted && issue.has_voted) {
@@ -49,6 +54,10 @@
                 }
 
                 if (reported && issue.reporter === $scope.currentUser.name) {
+                    return false;
+                }
+
+                if (subTask && issue.sub_task === true) {
                     return false;
                 }
 
@@ -123,6 +132,9 @@
                                     },
                                     function () {
                                         return localStorage.getItem('issueState');
+                                    },
+                                    function () {
+                                        return localStorage.getItem('subTask');
                                     }
                                 ],
                                 function () {

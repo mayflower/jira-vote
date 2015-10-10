@@ -22,6 +22,7 @@
             voted:    fetchLocaleStorageBoolSafe('voted'),
             resolved: fetchLocaleStorageBoolSafe('resolved'),
             reported: fetchLocaleStorageBoolSafe('reported'),
+            subtask:  fetchLocaleStorageBoolSafe('subTask'),
             type:     currentType,
             types:    types,
             states:   states,
@@ -32,6 +33,7 @@
             localStorage.setItem('voted', $scope.data.voted);
             localStorage.setItem('reported', $scope.data.reported);
             localStorage.setItem('resolved', $scope.data.resolved);
+            localStorage.setItem('subTask', $scope.data.subtask);
 
             if (false !== $scope.data.type) {
                 localStorage.setItem('issueType', $scope.data.type);

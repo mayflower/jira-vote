@@ -78,6 +78,11 @@ class Issue
     private $status;
 
     /**
+     * @var bool
+     */
+    private $subTask;
+
+    /**
      * Factory which creates a issue with from the decoded result of the jira api
      *
      * @param array $issue
@@ -101,6 +106,7 @@ class Issue
         $issueDomain->setIssueKey($issue['key']);
         $issueDomain->setIssueType($issue['fields']['issuetype']['name']);
         $issueDomain->setStatus($issue['fields']['status']['name']);
+        $issueDomain->setSubTask($issue['fields']['issuetype']['subtask']);
 
         return $issueDomain;
     }
@@ -393,5 +399,21 @@ class Issue
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSubTask()
+    {
+        return $this->subTask;
+    }
+
+    /**
+     * @param boolean $subTask
+     */
+    public function setSubTask($subTask)
+    {
+        $this->subTask = (bool) $subTask;
     }
 } 
