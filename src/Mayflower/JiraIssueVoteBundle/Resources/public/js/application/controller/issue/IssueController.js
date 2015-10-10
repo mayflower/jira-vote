@@ -10,6 +10,8 @@
         $scope.loadMoreItems = false;
         $scope.disableMore   = false;
         $scope.showButton    = false;
+        $scope.issueTypes    = [];
+        $scope.issueStates   = [];
 
         if (localStorage.getItem('voted') === null) {
             localStorage.setItem('voted', 'true');
@@ -31,9 +33,11 @@
         };
 
         function filter (issues) {
-            var voted    = localStorage.getItem('voted') === 'true';
-            var resolved = localStorage.getItem('resolved') === 'true';
-            var reported = localStorage.getItem('reported') === 'true';
+            var voted      = localStorage.getItem('voted') === 'true';
+            var resolved   = localStorage.getItem('resolved') === 'true';
+            var reported   = localStorage.getItem('reported') === 'true';
+            var issueType  = localStorage.getItem('issueType');
+            var issueState = localStorage.getItem('issueState');
 
             return issues.filter(function (issue) {
                 if (voted && issue.has_voted) {
@@ -46,6 +50,18 @@
 
                 if (reported && issue.reporter === $scope.currentUser.name) {
                     return false;
+                }
+
+                if (null !== issueType) {
+                    if (issue.issue_type !== issueType && 'Everything' !== issueType) {
+                        return false;
+                    }
+                }
+
+                if (null !== issueState) {
+                    if (issue.status !== issueState && 'Everything' !== issueState) {
+                        return false;
+                    }
                 }
 
                 return true;
@@ -101,6 +117,12 @@
                                     },
                                     function () {
                                         return localStorage.getItem('reported');
+                                    },
+                                    function () {
+                                        return localStorage.getItem('issueType');
+                                    },
+                                    function () {
+                                        return localStorage.getItem('issueState');
                                     }
                                 ],
                                 function () {
@@ -108,6 +130,35 @@
                                     $scope.issues = filter(data);
                                 }
                             );
+                        }
+
+                        var issueTypes  = response.data.types;
+                        var issueStates = response.data.states;
+
+                        typeCheck:
+                        for (var i in issueTypes) {
+                            var knownTypes  = $scope.issueTypes;
+
+                            for (var x in knownTypes) {
+                                if (knownTypes[x] === issueTypes[i]) {
+                                    continue typeCheck;
+                                }
+                            }
+
+                            $scope.issueTypes.push(issueTypes[i]);
+                        }
+
+                        stateCheck:
+                        for (var i in issueStates) {
+                            var knownStates = $scope.issueStates;
+
+                            for (var y in knownStates) {
+                                if (knownStates[y] === issueStates[i] || knownStates[y] === undefined) {
+                                    continue stateCheck;
+                                }
+                            }
+
+                            $scope.issueStates.push(issueStates[i]);
                         }
                     },
                     function (response) {

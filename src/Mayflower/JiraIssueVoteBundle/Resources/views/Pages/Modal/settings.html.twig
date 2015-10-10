@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="settings-label">Custom settings</h4>
+                <h4 class="modal-title" id="settings-label">Custom exclusion settings</h4>
             </div>
             <div class="modal-body" ng-controller="settingsController">
                 <div>
@@ -26,6 +26,22 @@
                         <input type="checkbox" ng-model="data.resolved" />
                         <span>Issues that were closed</span>
                     </label>
+                </div>
+                <hr />
+                <div>
+                    <label>Here you can exclude issues by special properties:</label>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: normal;">
+                        <span>Exclude by their type:</span>
+                    </label>
+                    <select class="form-control" ng-options="type for type in issueTypes" ng-model="data.type"></select>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: normal;">
+                        <span>Exclude by their state:</span>
+                    </label>
+                    <select class="form-control" ng-options="state for state in issueStates" ng-model="data.state"></select>
                 </div>
                 <div class="message">
                     <button type="button" class="btn btn-primary" ng-click="updateSettings()">Modify settings</button>

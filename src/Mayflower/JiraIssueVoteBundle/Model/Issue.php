@@ -73,6 +73,11 @@ class Issue
     private $issueKey;
 
     /**
+     * @var string
+     */
+    private $status;
+
+    /**
      * Factory which creates a issue with from the decoded result of the jira api
      *
      * @param array $issue
@@ -95,6 +100,7 @@ class Issue
         $issueDomain->setCreated((new \DateTime($issue['fields']['created']))->format('m/d/Y h:i A'));
         $issueDomain->setIssueKey($issue['key']);
         $issueDomain->setIssueType($issue['fields']['issuetype']['name']);
+        $issueDomain->setStatus($issue['fields']['status']['name']);
 
         return $issueDomain;
     }
@@ -371,5 +377,21 @@ class Issue
     public function setIssueType($issueType)
     {
         $this->issueType = $issueType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 } 

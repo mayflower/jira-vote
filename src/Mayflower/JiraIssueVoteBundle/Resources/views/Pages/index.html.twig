@@ -68,6 +68,7 @@
                             <div class="col-md-4" style="text-align: right;">
                                 <p style="vertical-align: middle;">
                                     <label class="badge issue-type" style="margin-right: 10px;"><% issue.issue_type %></label>
+                                    <label class="badge issue-type" style="margin-right: 10px;"><% issue.status %></label>
                                     <span class="badge" ng-init="votes = issue.vote_count"><% votes %>&nbsp;<% labelPluralizationFixer(votes) %></span>
                                 </p>
                             </div>
@@ -92,13 +93,13 @@
                                         {% image '@MayflowerJiraIssueVoteBundle/Resources/public/img/ajax-loader.gif' %}
                                             <img src="{{ asset_url }}" />
                                         {% endimage %}
-                                        </span> <% currentAction === 'vote' ? 'Vote' : 'Unvote' %>
+                                        </span>&nbsp;<% currentAction === 'vote' ? 'Vote' : 'Unvote' %>
                                     </button>
-                                <p ng-show="error">
-                                    <span class="text-danger">
-                                        <% error %>
-                                    </span>
-                                </p>
+                                    <p ng-show="error">
+                                        <span class="text-danger">
+                                            <% error %>
+                                        </span>
+                                    </p>
                                 </p>
                             </div>
                         </div>

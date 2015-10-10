@@ -49,10 +49,26 @@ class ApiController extends Controller
             );
         }
 
+        $issues      = $issueManager->findRecent($filterId, $offset, $request->getSession()->get(self::SELECTED_FILTER_TYPE));
+        $issueTypes  = [];
+        $issueStates = [];
+
+        foreach ($issues as $issue) {
+            $type = $issue->getIssueType();
+            if (!in_array($type, $issueTypes)) {
+                $issueTypes[] = $type;
+            }
+            if (!in_array($issue->getStatus(), $issueStates) && !empty($issue->getStatus())) {
+                $issueStates[] = $issue->getStatus();
+            }
+        }
+
         return [
-            'issues'      => $issueManager->findRecent($filterId, $offset, $request->getSession()->get(self::SELECTED_FILTER_TYPE)),
+            'issues'      => $issues,
             'currentUser' => $user,
             'filterName'  => $session->get(self::SELECTED_FILTER_NAME),
+            'types'       => $issueTypes,
+            'states'      => $issueStates,
         ];
     }
 
